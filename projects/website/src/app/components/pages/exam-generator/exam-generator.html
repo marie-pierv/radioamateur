@@ -1,10 +1,11 @@
 <router-outlet />
 
 <div class="card">
-  <app-text-h1><span class="card__title"></span> Générateur d'Examen</app-text-h1>
+  <app-questions>Générateur d'Examens</app-questions>
 
   <div class="controls-container">
-    <label>Nombre de questions :</label>
+    <app-label class="test">Nombre de questions :</app-label>
+    <!--class à modifier-->
     <select (change)="onQuantityChange($event)">
       <option value="10">10 questions</option>
       <option value="20">20 questions</option>
@@ -12,7 +13,7 @@
       <option value="100">100 questions</option>
     </select>
 
-    <label>Choisir une section :</label>
+    <app-label class="test">Choisir une section :</app-label>
     <select (change)="onCategoryChange($event)">
       <option value="">-- Sélectionnez une section --</option>
       @for (cat of categories; track cat.code) {
@@ -21,9 +22,9 @@
     </select>
 
     <div>
-      <button (click)="startExam()" [disabled]="!selectedCategory()" class="btn-primary">
-        Débuter
-      </button>
+      <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
+        <span>Débuter</span>
+      </app-button>
     </div>
   </div>
   <div>
@@ -54,7 +55,7 @@
                 [checked]="selectedAnswer() === answer"
                 [disabled]="hasValidated()"
               />
-              <label [for]="'a' + $index">{{ answer }}</label>
+              <app-label [for]="'a' + $index">{{ answer }}</app-label>
             </div>
           }
         </form>

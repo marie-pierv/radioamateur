@@ -5,12 +5,10 @@
   display: block;
 }
 
-.card {
-  background-color: rgb(255, 255, 255);
-  &__title {
-    color: $color-primary;
-  }
-}
-.test {
+.text-h2 {
+  font-family: $font-main;
+  font-size: 36px;
+  // color: $color-bg;
   font-weight: 700;
+  line-height: 1.2em;
 }

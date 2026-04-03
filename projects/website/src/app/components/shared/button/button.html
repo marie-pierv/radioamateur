@@ -1,9 +1,14 @@
 @if (link()) {
-  <a [routerLink]="link()" [class]="'button-radio ' + variant()">
+  <a [routerLink]="link()" [class]="'button-base ' + variant()" [class.disabled]="disabled()">
     <ng-content></ng-content>
   </a>
 } @else {
-  <button [type]="type()" [class]="'button-radio ' + variant()" (click)="onClick()">
+  <button
+    [type]="type()"
+    [class]="'button-base ' + variant()"
+    (click)="onClick()"
+    [disabled]="disabled()"
+  >
     <ng-content></ng-content>
   </button>
 }

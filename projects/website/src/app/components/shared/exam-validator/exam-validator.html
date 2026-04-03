@@ -11,14 +11,14 @@
       @for (option of ['a', 'b', 'c', 'd']; track option) {
         @let reponseTexte = getReponseParLettre(option);
 
-        <button
+        <app-button
           type="button"
           [class.selected]="userAnswer === reponseTexte"
           (click)="onSelectAnswer(reponseTexte)"
         >
           <span>{{ option.toUpperCase() }}.</span>
           <span>{{ reponseTexte }}</span>
-        </button>
+        </app-button>
       }
     </div>
 

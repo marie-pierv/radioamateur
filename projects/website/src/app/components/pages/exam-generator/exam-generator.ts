@@ -1,13 +1,16 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, Input } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
 import { TextH1 } from '../../shared/text-h1/text-h1';
+import { Questions } from '../../shared/questions/questions';
+import { Label } from '../../shared/label/label';
+import { Button } from '../../shared/button/button';
 
 @Component({
   selector: 'app-exam-generator',
   standalone: true,
-  imports: [RouterOutlet, TextH1],
+  imports: [RouterOutlet, Questions, Label, Button],
   templateUrl: './exam-generator.html',
   styleUrl: './exam-generator.scss',
 })

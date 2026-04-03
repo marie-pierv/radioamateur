@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Questions } from '../../../interfaces/questions';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
+import { Button } from '../button/button';
 
 @Component({
   selector: 'app-exam-validator',
-  imports: [],
+  imports: [Button],
   templateUrl: './exam-validator.html',
   styleUrl: './exam-validator.scss',
 })

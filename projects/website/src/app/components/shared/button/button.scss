@@ -1,7 +1,7 @@
 @use 'sass:color';
 @use '../../../../styles.scss' as *;
 
-.button-radio {
+.button-base {
   display: inline-block; // Important pour un <a>
   text-decoration: none;
   text-align: center;
@@ -10,15 +10,12 @@
   //   margin: 10px 0 10px 20px;
 
   &.primary {
-    background-color: $color-bg;
-    color: $color-text;
-    border: 1.5px solid $color-bg;
+    border: 1.5px solid;
     font-size: 13px;
     font-weight: 700;
     &:hover {
       // background-color: color.adjust($color-accent, $lightness: 10%);
-      background-color: $color-accent;
-      border: 1.5px solid $color-accent;
+      border: 1.5px solid;
     }
   }
 
@@ -32,6 +29,22 @@
       // background-color: color.adjust($color-accent, $lightness: 10%);
       background-color: $color-accent;
       border: 1.5px solid $color-accent;
+      color: $color-primary;
+    }
+  }
+  &.tile {
+    background-color: $color-text;
+    border: 1px solid $color-text;
+    font-size: 13px;
+    font-weight: 700;
+    color: $color-bg;
+
+    &:active:not(:disabled) {
+      background-color: color.adjust($color-text, $lightness: 10%);
+    }
+
+    &:disabled {
+      background-color: color.adjust($color-text, $lightness: 50%);
     }
   }
 }
