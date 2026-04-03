@@ -10,10 +10,12 @@
   <div class="navbar__container" [class.active]="isMenuOpen">
     <ul class="navbar__menu">
       <li class="navbar__item">
-        <a href="#" (click)="isMenuOpen = false" class="navbar__link">Apprendre</a>
+        <a href="" (click)="isMenuOpen = false" class="navbar__link">Apprendre</a>
       </li>
       <li>
-        <a routerLink="/examens" (click)="isMenuOpen = false" class="navbar__link">Pratiquer</a>
+        <a routerLink="/dashboard/examens" (click)="isMenuOpen = false" class="navbar__link"
+          >Pratiquer</a
+        >
       </li>
     </ul>
   </div>

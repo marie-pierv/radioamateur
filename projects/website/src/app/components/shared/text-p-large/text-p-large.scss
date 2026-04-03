@@ -1,0 +1,14 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.text-p-large {
+  font-family: $font-main;
+  font-size: 17px;
+  // color: $color-bg;
+  font-weight: 400;
+  line-height: 1.5em;
+}

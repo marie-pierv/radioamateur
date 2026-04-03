@@ -2,11 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
+import { TextH1 } from '../../shared/text-h1/text-h1';
 
 @Component({
   selector: 'app-exam-generator',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, TextH1],
   templateUrl: './exam-generator.html',
   styleUrl: './exam-generator.scss',
 })

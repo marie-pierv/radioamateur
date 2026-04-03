@@ -1,0 +1,14 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.text-h1 {
+  font-family: $font-main;
+  font-size: 41px;
+  // color: $color-bg;
+  font-weight: 700;
+  line-height: 1.2em;
+}
