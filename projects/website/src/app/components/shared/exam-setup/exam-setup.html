@@ -1,0 +1,79 @@
+<!-- @if (!isExamStarted()) {
+  <div class="controls-container">
+    <app-label class="test">Nombre de questions :</app-label>
+
+    <select (change)="onQuantityChange($event)">
+      <option value="10">10 questions</option>
+      <option value="20">20 questions</option>
+      <option value="50">50 questions</option>
+      <option value="100">100 questions</option>
+    </select>
+
+    <app-label class="test">Choisir une section :</app-label>
+    <select (change)="onCategoryChange($event)">
+      <option value="">-- Sélectionnez une section --</option>
+      @for (cat of categories; track cat.code) {
+        <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
+      }
+    </select>
+
+    <div>
+      <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
+        <span>Débuter</span>
+      </app-button>
+    </div>
+  </div>
+} @else if (!examEnd()) {
+  <div class="quiz-area">
+    <app-form [selectedCategory]="selectedCategory()" [quantity]="quantity()"> </app-form>
+  </div>
+}
+@if (examEnd()) {
+  <div>
+    <h2>Félicitations !</h2>
+    <p>Vous avez terminé votre série de {{ quantity() }} questions.</p>
+    <p>Votre score est enregistré dans votre profil.</p>
+    <button (click)="examEnd.set(false); selectedCategory.set('')">Recommencer</button>
+  </div>
+} -->
+
+<div class="main-wrapper">
+  @if (!isExamStarted()) {
+    <div class="controls-container">
+      <app-label class="test">Nombre de questions :</app-label>
+      <!--class à modifier-->
+      <select (change)="onQuantityChange($event)">
+        <option value="10">10 questions</option>
+        <option value="20">20 questions</option>
+        <option value="50">50 questions</option>
+        <option value="100">100 questions</option>
+      </select>
+
+      <app-label class="test">Choisir une section :</app-label>
+      <select (change)="onCategoryChange($event)">
+        <option value="">-- Sélectionnez une section --</option>
+        @for (cat of categories; track cat.code) {
+          <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
+        }
+      </select>
+
+      <div>
+        <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
+          <span>Débuter</span>
+        </app-button>
+      </div>
+    </div>
+  } @else if (!examEnd()) {
+    <div class="quiz-area">
+      <app-form [selectedCategory]="selectedCategory()" [quantity]="quantity()"> </app-form>
+    </div>
+  }
+  @if (examEnd()) {
+    <div>
+      <h2>Félicitations !</h2>
+      <p>Vous avez terminé votre série de {{ quantity() }} questions.</p>
+      <p>Votre score est enregistré dans votre profil.</p>
+      <button (click)="examEnd.set(false); selectedCategory.set('')">Recommencer</button>
+    </div>
+  }
+</div>

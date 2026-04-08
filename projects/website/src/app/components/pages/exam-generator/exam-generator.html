@@ -1,84 +1,12 @@
 <router-outlet />
+<app-card>
+  <div class="card">
+    <app-questions>Générateur d'Examens</app-questions>
 
-<div class="card">
-  <app-questions>Générateur d'Examens</app-questions>
-
-  <div class="controls-container">
-    <app-label class="test">Nombre de questions :</app-label>
-    <!--class à modifier-->
-    <select (change)="onQuantityChange($event)">
-      <option value="10">10 questions</option>
-      <option value="20">20 questions</option>
-      <option value="50">50 questions</option>
-      <option value="100">100 questions</option>
-    </select>
-
-    <app-label class="test">Choisir une section :</app-label>
-    <select (change)="onCategoryChange($event)">
-      <option value="">-- Sélectionnez une section --</option>
-      @for (cat of categories; track cat.code) {
-        <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
-      }
-    </select>
-
-    <div>
-      <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
-        <span>Débuter</span>
-      </app-button>
-    </div>
-  </div>
-  <div>
-    @if (examEnd()) {
-      <div>
-        <h2>Félicitations !</h2>
-        <p>Vous avez terminé votre série de {{ quantity() }} questions.</p>
-        <p>Votre score est enregistré dans votre profil.</p>
-        <button (click)="examEnd.set(false); selectedCategory.set('')">Recommencer</button>
-      </div>
+    @if (!isExamStarted()) {
+      <app-exam-setup (onStart)="isExamStarted.set(true)"></app-exam-setup>
+    } @else {
+      <app-form></app-form>
     }
   </div>
-  <div>
-    @if (currentQuestionLabel() && !examEnd()) {
-      <div class="question-card">
-        <p class="progress">Question {{ questionsAnswered() + 1 }} sur {{ quantity() }}</p>
-
-        <p><strong>Question :</strong> {{ currentQuestionLabel() }}</p>
-        <form>
-          @for (answer of currentAnswers(); track $index) {
-            <div class="answer-option">
-              <input
-                type="radio"
-                name="ans"
-                [id]="'a' + $index"
-                [value]="answer"
-                (change)="selectedAnswer.set(answer)"
-                [checked]="selectedAnswer() === answer"
-                [disabled]="hasValidated()"
-              />
-              <app-label [for]="'a' + $index">{{ answer }}</app-label>
-            </div>
-          }
-        </form>
-
-        @if (feedback()) {
-          <div>
-            {{ feedback() }}
-          </div>
-        }
-        <div>
-          @if (!hasValidated()) {
-            <button (click)="verifierReponse()" [disabled]="!selectedAnswer()">
-              Valider la réponse
-            </button>
-          }
-
-          @if (hasValidated()) {
-            <button (click)="loadQuestionByCategory()" class="btn-next">
-              {{ questionsAnswered() < quantity() ? 'Question Suivante' : "Terminer l'examen" }}
-            </button>
-          }
-        </div>
-      </div>
-    }
-  </div>
-</div>
+</app-card>
