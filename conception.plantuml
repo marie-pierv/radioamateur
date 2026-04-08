@@ -1,0 +1,173 @@
+@startuml
+hide methods
+hide stereotypes
+skinparam classAttributeIconSize 0
+
+entity "users" as users {
+  *id : INTEGER <<PK>>
+  --
+  email : TEXT
+  username : TEXT
+  password_hash : TEXT
+  role : TEXT
+  created_at : DATETIME
+  updated_at : DATETIME
+  last_login_at : DATETIME
+  is_active : BOOLEAN
+}
+
+entity "question_categories" as question_categories {
+  *id : INTEGER <<PK>>
+  --
+  code : TEXT
+  label : TEXT
+  description : TEXT
+  sort_order : INTEGER
+}
+
+entity "questions" as questions {
+  *id : INTEGER <<PK>>
+  --
+  category_id : INTEGER
+  external_ref : TEXT
+  statement : TEXT
+  explanation : TEXT
+  exam_type : TEXT
+  is_active : BOOLEAN
+  created_at : DATETIME
+  updated_at : DATETIME
+}
+
+entity "question_choices" as question_choices {
+  *id : INTEGER <<PK>>
+  --
+  question_id : INTEGER <<FK>>
+  choice_key : TEXT
+  label : TEXT
+  is_correct : BOOLEAN
+}
+
+entity "exam_sessions" as exam_sessions {
+  *id : INTEGER <<PK>>
+  --
+  user_id : INTEGER <<FK>>
+  exam_type : TEXT
+  status: in_progress | done | cancelled
+  question_count : INTEGER
+  started_at : DATETIME
+  submitted_at : DATETIME
+}
+
+entity "exam_session_questions" as exam_session_questions {
+  *id : INTEGER <<PK>>
+  --
+  session_id : INTEGER <<FK>>
+  question_id : INTEGER <<FK>>
+  display_order : INTEGER
+}
+
+entity "exam_session_answers" as exam_session_answers {
+  *id : INTEGER <<PK>>
+  --
+  session_question_id : INTEGER <<FK>>
+  selected_choice_id : INTEGER <<FK>>
+  answered_at : DATETIME
+}
+
+entity "courses" as courses {
+  *id : INTEGER <<PK>>
+  --
+  title : TEXT
+  slug : TEXT
+  description : TEXT
+  is_published : BOOLEAN
+  created_at : DATETIME
+  updated_at : DATETIME
+}
+
+entity "course_chapters" as course_chapters {
+  *id : INTEGER <<PK>>
+  --
+  course_id : INTEGER <<FK>>
+  title : TEXT
+  slug : TEXT
+  description : TEXT
+  sort_order : INTEGER
+  is_published : BOOLEAN
+}
+
+entity "chapter_widgets" as chapter_widgets {
+  *id : INTEGER <<PK>>
+  --
+  chapter_id : INTEGER <<FK>>
+  type : TEXT
+  title : TEXT
+  sort_order : INTEGER
+  content_json : JSON
+  is_required : BOOLEAN
+  is_published : BOOLEAN
+  created_at : DATETIME
+  updated_at : DATETIME
+}
+
+entity "widget_question_links" as widget_question_links {
+  *widget_id : INTEGER <<FK>>
+  *question_id : INTEGER <<FK>>
+}
+
+entity "user_widget_progress" as user_widget_progress {
+  *id : INTEGER <<PK>>
+  --
+  user_id : INTEGER <<FK>>
+  widget_id : INTEGER <<FK>>
+  started_at : DATETIME
+  completed_at : DATETIME
+  state_json : JSON
+}
+
+users ||--o{ exam_sessions : has
+users ||--o{ user_widget_progress : tracks
+
+
+questions ||--o{ question_choices : has
+questions ||--o{ question_categories : tagged_by
+
+exam_sessions ||--o{ exam_session_questions : contains
+questions ||--o{ exam_session_questions : selected_for
+exam_session_questions ||--o{ exam_session_answers : answered_by
+question_choices ||--o{ exam_session_answers : selected_choice
+
+courses ||--o{ course_chapters : contains
+course_chapters ||--o{ chapter_widgets : contains
+
+chapter_widgets ||--o{ widget_question_links : covers
+questions ||--o{ widget_question_links : linked_to
+
+chapter_widgets ||--o{ user_widget_progress : progressed_on
+
+
+note right of exam_sessions
+Modes:
+- quick_practice
+- mock_exam
+end note
+
+note right of chapter_widgets
+Widget types can include:
+- text
+- image
+- video
+- quiz
+- question_list
+- interactive_exercise
+- callout
+- flashcard
+- external_link
+end note
+
+note bottom of widget_question_links
+Used by admins to verify whether
+all exam questions are covered
+by course content.
+end note
+@enduml
