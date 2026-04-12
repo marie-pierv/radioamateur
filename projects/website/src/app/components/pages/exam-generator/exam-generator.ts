@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, Input } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PracticeExam } from '../../../services/practice-exam';
-import { Button } from '../../shared/button/button';
 import { Card } from '../../shared/card/card';
 import { ExamDisplay } from '../../shared/exam-display/exam-display';
 import { FormStartExam } from '../../shared/form-start-exam/form-start-exam';
@@ -9,7 +8,7 @@ import { FormStartExam } from '../../shared/form-start-exam/form-start-exam';
 @Component({
   selector: 'app-exam-generator',
   standalone: true,
-  imports: [RouterOutlet, Button, FormStartExam, Card, ExamDisplay],
+  imports: [RouterOutlet, FormStartExam, Card, ExamDisplay],
   templateUrl: './exam-generator.html',
   styleUrl: './exam-generator.scss',
 })

@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, input, output, signal, computed } from '@angular/core';
 import { Button } from '../button/button';
 import { Questions } from '../../../interfaces/questions';
-import { Title } from '../title/title';
 
 @Component({
   selector: 'app-question',
-  imports: [Button, Title],
+  imports: [Button],
   templateUrl: './question.html',
   styleUrl: './question.scss',
 })

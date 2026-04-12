@@ -1,14 +1,13 @@
 import { Component, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../button/button';
-import { Card } from '../card/card';
 import { ExamDisplay } from '../exam-display/exam-display';
 import { Title } from '../title/title';
 
 @Component({
   selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Button, ExamDisplay, Card, Title],
+  imports: [Button, ExamDisplay, Title],
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
