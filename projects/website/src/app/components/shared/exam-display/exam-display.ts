@@ -1,16 +1,16 @@
-import { Component, OnInit, signal, model } from '@angular/core';
+import { Component, OnInit, signal, model, input } from '@angular/core';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
-import { Label } from '../../shared/label/label';
 import { Button } from '../../shared/button/button';
+import { Title } from '../title/title';
 
 @Component({
-  selector: 'app-form',
-  imports: [Button, Label],
-  templateUrl: './form.html',
-  styleUrl: './form.scss',
+  selector: 'app-exam-display',
+  imports: [Button, Title],
+  templateUrl: './exam-display.html',
+  styleUrl: './exam-display.scss',
 })
-export class Form implements OnInit {
+export class ExamDisplay implements OnInit {
   // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
@@ -34,6 +34,7 @@ export class Form implements OnInit {
   examEnd = signal<boolean>(false);
   questionsAnswered = signal<number>(0);
   hasValidated = signal<boolean>(false);
+  isSelected = input<boolean>(false);
 
   getLetter(index: number): string {
     return String.fromCharCode(65 + index); /// 65 = A
