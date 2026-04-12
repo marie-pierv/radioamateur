@@ -1,15 +1,12 @@
 import { Component, OnInit, signal, model } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
-import { TextH1 } from '../../shared/text-h1/text-h1';
 import { Label } from '../../shared/label/label';
 import { Button } from '../../shared/button/button';
-import { Questions } from '../questions/questions';
 
 @Component({
   selector: 'app-form',
-  imports: [Questions, Button, Label],
+  imports: [Button, Label],
   templateUrl: './form.html',
   styleUrl: './form.scss',
 })

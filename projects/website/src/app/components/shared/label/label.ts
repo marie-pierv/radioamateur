@@ -1,9 +1,9 @@
 import { Component, input } from '@angular/core';
-import { TextP } from '../text-p/text-p';
+import { Title } from '../title/title';
 
 @Component({
   selector: 'app-label',
-  imports: [TextP],
+  imports: [Title],
   templateUrl: './label.html',
   styleUrl: './label.scss',
 })

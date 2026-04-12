@@ -1,0 +1,39 @@
+<div class="question-card">
+  <h3>{{ question().question_french }}</h3>
+
+  <div class="options-list">
+    @for (letter of ['a', 'b', 'c', 'd']; track letter) {
+      <button
+        class="option-btn"
+        [class.selected]="selectedAnswer() === letter"
+        [class.correct]="
+          hasValidated() && showResultAtSelection() && question().correct_answer_french === letter
+        "
+        [class.wrong]="
+          hasValidated() &&
+          showResultAtSelection() &&
+          selectedAnswer() === letter &&
+          question().correct_answer_french !== letter
+        "
+        (click)="onSelect(letter)"
+      >
+        <span class="letter">{{ letter | uppercase }}.</span>
+        <span class="text">{{ question()['reponse_' + letter] }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="actions">
+    @if (!hasValidated()) {
+      <app-button (click)="onValidate()" [disabled]="!selectedAnswer()"> Valider </app-button>
+    } @else {
+      <app-button (click)="onNext()"> Suivant </app-button>
+    }
+  </div>
+
+  @if (hasValidated() && showResultAtSelection()) {
+    <div class="feedback" [class.success]="isCorrect()" [class.error]="!isCorrect()">
+      {{ isCorrect() ? '✅ Bonne réponse !' : '❌ Mauvaise réponse.' }}
+    </div>
+  }
+</div>

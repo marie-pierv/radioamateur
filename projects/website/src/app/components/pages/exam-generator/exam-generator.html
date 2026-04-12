@@ -1,12 +1,13 @@
 <router-outlet />
-<app-card>
-  <div class="card">
-    <app-questions>Générateur d'Examens</app-questions>
+
+<div class="">
+  <app-card>
+    <span>Générateur d'Examens</span>
 
     @if (!isExamStarted()) {
       <app-exam-setup (onStart)="isExamStarted.set(true)"></app-exam-setup>
     } @else {
       <app-form></app-form>
     }
-  </div>
-</app-card>
+  </app-card>
+</div>

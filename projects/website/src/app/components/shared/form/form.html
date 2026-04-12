@@ -1,9 +1,9 @@
 <div class="quiz-container">
   <p class="progress">Question {{ questionsAnswered() + 1 }} sur {{ quantity() }}</p>
 
-  <app-questions>
+  <span>
     {{ currentQuestionLabel() }}
-  </app-questions>
+  </span>
 
   <div class="answers-grid">
     @for (opt of currentAnswers(); track $index) {
@@ -18,7 +18,6 @@
     @if (feedback()) {
       <p class="feedback-text">{{ feedback() }}</p>
     }
-
     @if (!hasValidated()) {
       <app-button (click)="verifierReponse()" [disabled]="!selectedAnswer()">
         <span>Valider la réponse</span>

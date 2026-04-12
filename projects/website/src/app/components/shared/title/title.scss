@@ -1,0 +1,41 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.title-h1 {
+  font-family: $font-main;
+  font-size: 41px;
+  // color: $color-bg;
+  font-weight: 700;
+  line-height: 1.2em;
+}
+
+.title-h2 {
+  font-family: $font-main;
+  font-size: 36px;
+  // color: $color-bg;
+  font-weight: 700;
+  line-height: 1.2em;
+}
+
+.title-h3 {
+  font-family: $font-main;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2em;
+}
+
+.title-p {
+  font-family: $font-main;
+  font-size: 16px;
+}
+
+.title-p-large {
+  font-family: $font-main;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.5em;
+}
