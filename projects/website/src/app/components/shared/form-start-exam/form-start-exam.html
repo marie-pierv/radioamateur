@@ -1,7 +1,9 @@
 <div class="main-wrapper">
   @if (!isExamStarted()) {
     <div class="controls-container">
-      <app-label class="test">Nombre de questions :</app-label>
+      <app-title variant="h3">Générateur d'examen</app-title>
+
+      <app-title>Nombre de questions :</app-title>
       <!--class à modifier-->
       <select (change)="onQuantityChange($event)">
         <option value="10">10 questions</option>
@@ -10,7 +12,7 @@
         <option value="100">100 questions</option>
       </select>
 
-      <app-label class="test">Choisir une section :</app-label>
+      <app-title class="test">Choisir une section :</app-title>
       <select (change)="onCategoryChange($event)">
         <option value="">-- Sélectionnez une section --</option>
         @for (cat of categories; track cat.code) {
@@ -26,15 +28,16 @@
     </div>
   } @else if (!examEnd()) {
     <div class="quiz-area">
-      <app-form [selectedCategory]="selectedCategory()" [quantity]="quantity()"> </app-form>
+      <app-exam-display [selectedCategory]="selectedCategory()" [quantity]="quantity()">
+      </app-exam-display>
     </div>
   }
-  @if (examEnd()) {
+  <!-- @if (examEnd()) {
     <div>
-      <h2>Félicitations !</h2>
+      <app-title variant="p-large">Félicitations !</app-title>
       <p>Vous avez terminé votre série de {{ quantity() }} questions.</p>
       <p>Votre score est enregistré dans votre profil.</p>
       <button (click)="examEnd.set(false); selectedCategory.set('')">Recommencer</button>
     </div>
-  }
+  } -->
 </div>

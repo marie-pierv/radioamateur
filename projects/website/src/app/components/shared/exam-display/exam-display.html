@@ -1,0 +1,42 @@
+<div class="exam">
+  <!-- <app-title variant="p-large" class="progress"
+    >Question {{ questionsAnswered() + 1 }} sur {{ quantity() }}</app-title
+  > -->
+
+  <app-title variant="h3">
+    {{ currentQuestionLabel() }}
+  </app-title>
+
+  <div class="exam__answers-grid">
+    @for (opt of currentAnswers(); track $index) {
+      <app-button
+        class="exam__answers-grid__button"
+        variant="answer"
+        [isSelected]="selectedAnswer() === opt"
+        (btnClick)="onSelect(opt)"
+      >
+        <span class="exam__answers-grid__label">{{ getLetter($index) }}.</span>
+        <app-title variant="p" class="exam__answers-grid__text">{{ opt }}</app-title>
+      </app-button>
+    }
+  </div>
+
+  <div class="actions-container">
+    @if (feedback()) {
+      <p class="feedback-text">{{ feedback() }}</p>
+    }
+    @if (!hasValidated()) {
+      <app-button variant="tile" (click)="verifierReponse()" [disabled]="!selectedAnswer()">
+        <span>Valider la réponse</span>
+      </app-button>
+    }
+
+    @if (hasValidated()) {
+      <app-button (click)="loadQuestionByCategory()" variant="tile" class="btn-next">
+        <span>
+          {{ questionsAnswered() + 1 < quantity() ? 'Question Suivante' : "Terminer l'examen" }}
+        </span>
+      </app-button>
+    }
+  </div>
+</div>

@@ -1,0 +1,38 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.exam {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+
+  &__answers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    background-color: #fff;
+    border-style: solid 1px $color-primary;
+
+    app-button {
+      display: block;
+      width: 100%;
+
+      ::ng-deep {
+        .button-base {
+          width: 100% !important;
+          display: flex;
+          justify-content: flex-start;
+          text-align: left;
+          line-height: 1.2rem;
+          padding: 5px 10px;
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@
 } @else {
   <button
     [type]="type()"
+    [class.selected]="isSelected()"
     [class]="'button-base ' + variant()"
     (click)="onClick()"
     [disabled]="disabled()"

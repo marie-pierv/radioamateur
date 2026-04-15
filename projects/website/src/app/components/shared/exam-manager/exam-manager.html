@@ -1,1 +1,43 @@
-<p>exam-manager works!</p>,
+<div class="exam-container">
+  @if (!isStarted()) {
+    <div class="setup-card">
+      <h1>Pratique d'examen Radio Amateur</h1>
+
+      <label>Choisir une catégorie :</label>
+      <select (change)="selectedCategory.set($any($event.target).value)">
+        @for (cat of categories; track cat.code) {
+          <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
+        }
+      </select>
+
+      <label>Nombre de questions :</label>
+      <input
+        type="number"
+        [value]="quantity()"
+        (input)="quantity.set($any($event.target).valueAsNumber)"
+      />
+
+      <app-button variant="primary" (click)="startExam()">Démarrer la session</app-button>
+    </div>
+  } @else if (isStarted() && !isFinished()) {
+    <div class="quiz-header">
+      <span>Catégorie : {{ selectedCategory() }}</span>
+      <span>Question {{ currentIndex() + 1 }} / {{ sessionQuestions().length }}</span>
+    </div>
+
+    <app-question
+      [questionData]="sessionQuestions()[currentIndex()]"
+      [showResultAtSelection]="true"
+      (validatedAnswer)="handleAnswer($event)"
+      (nextRequested)="goToNext()"
+    >
+    </app-question>
+  } @else if (isFinished()) {
+    <div class="result-card">
+      <h2>Session terminée !</h2>
+      <p>Vous avez complété les {{ sessionQuestions().length }} questions.</p>
+
+      <app-button (click)="reset()">Retour au menu</app-button>
+    </div>
+  }
+</div>

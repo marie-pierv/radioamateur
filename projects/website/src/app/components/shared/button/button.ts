@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
 export class Button {
   disabled = input<boolean>(false);
   // Les propriétés de configuration (Inputs)
-  readonly variant = input<'primary' | 'secondary' | 'success' | 'tile'>('primary'); // Si on passe un lien, il devient un lien de navigation
+  readonly variant = input<'primary' | 'secondary' | 'success' | 'tile' | 'answer'>('primary'); // Si on passe un lien, il devient un lien de navigation
   link = input<string | null>(null);
 
   isSelected = input<boolean>(false);

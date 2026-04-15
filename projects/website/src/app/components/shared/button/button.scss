@@ -2,7 +2,6 @@
 @use '../../../../styles.scss' as *;
 
 .button-base {
-  display: inline-block; // Important pour un <a>
   text-decoration: none;
   text-align: center;
   border-radius: 0;
@@ -45,6 +44,20 @@
 
     &:disabled {
       background-color: color.adjust($color-text, $lightness: 50%);
+    }
+  }
+
+  &.answer {
+    background: transparent;
+    border: 1px solid $color-text;
+    color: $color-text;
+    text-align: left;
+    justify-content: flex-start;
+
+    &.selected {
+      background-color: color.adjust($color-text, $lightness: 80%) !important;
+      border-color: $color-text !important;
+      color: $color-text !important;
     }
   }
 }

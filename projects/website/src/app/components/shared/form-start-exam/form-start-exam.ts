@@ -1,18 +1,17 @@
 import { Component, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
-import { Label } from '../../shared/label/label';
-import { Button } from '../../shared/button/button';
-import { Form } from '../../shared/form/form';
-import { Card } from '../card/card';
+import { Button } from '../button/button';
+import { ExamDisplay } from '../exam-display/exam-display';
+import { Title } from '../title/title';
 
 @Component({
-  selector: 'app-exam-setup',
+  selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Label, Button, Form, Card],
-  templateUrl: './exam-setup.html',
-  styleUrl: './exam-setup.scss',
+  imports: [Button, ExamDisplay, Title],
+  templateUrl: './form-start-exam.html',
+  styleUrl: './form-start-exam.scss',
 })
-export class ExamSetup implements OnInit {
+export class FormStartExam implements OnInit {
   // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
