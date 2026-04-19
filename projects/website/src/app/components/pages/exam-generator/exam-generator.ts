@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, Input } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Card } from '../../shared/card/card';
@@ -19,6 +19,7 @@ export class ExamGenerator implements OnInit {
   examEnd = signal<boolean>(false);
 
   constructor(public practiceExam: PracticeExam) {}
+
   ngOnInit() {}
 
   startExam() {

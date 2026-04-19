@@ -6,7 +6,7 @@ import { Questions } from '../../../interfaces/questions';
 
 @Component({
   selector: 'app-question',
-  imports: [Button, UpperCasePipe],
+  imports: [Button],
   templateUrl: './question.html',
   styleUrl: './question.scss',
 })
