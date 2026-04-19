@@ -11,39 +11,56 @@ import { Questions } from '../../../interfaces/questions';
   styleUrl: './question.scss',
 })
 export class Question {
-  question = input.required<Questions>();
-  showResultAtSelection = input<boolean>(false);
+  // Données venant de exam-manager
+  questionData = input.required<Questions>();
+  showResultAtSelection = input<boolean>(true);
 
-  // Outputs
+  //Outputs - actions envoyées a exam-manager
   validatedAnswer = output<string>();
-  next = output<void>();
+  nextRequested = output<void>();
 
-  // États internes
-  selectedAnswer = signal<string | null>(null);
+  // États locaux
+  selectedOption = signal<any | null>(null);
   hasValidated = signal<boolean>(false);
 
-  // Vérification de la réponse (pour showResultAtSelection est true)
-  isCorrect = computed(() => {
-    const q = this.question();
-    return this.selectedAnswer() === q.correct_answer_french;
+  // mélange les options dès que la question change
+  options = computed(() => {
+    const q = this.questionData();
+
+    const allOptions = [
+      { text: q.correct_answer_french, isCorrect: true },
+      { text: q.incorrect_answer_1_french, isCorrect: false },
+      { text: q.incorrect_answer_2_french, isCorrect: false },
+      { text: q.incorrect_answer_3_french, isCorrect: false },
+    ];
+
+    // Random
+    const shuffled = [...allOptions].sort(() => Math.random() - 0.5);
+
+    // Ajout des labels A, B, C, D après le mélange
+    return shuffled.map((opt, index) => ({
+      ...opt,
+      label: ['A', 'B', 'C', 'D'][index],
+    }));
   });
 
-  onSelect(letter: string) {
-    if (this.hasValidated()) return; // Bloque après validation
-    this.selectedAnswer.set(letter);
+  onSelect(option: any) {
+    if (!this.hasValidated()) {
+      this.selectedOption.set(option);
+    }
   }
 
   onValidate() {
-    if (this.selectedAnswer()) {
+    if (this.selectedOption()) {
       this.hasValidated.set(true);
-      this.validatedAnswer.emit(this.selectedAnswer()!);
+      this.validatedAnswer.emit(this.selectedOption().text);
     }
   }
 
   onNext() {
-    this.next.emit();
-    // Reset interne pour la prochaine question injectée
-    this.selectedAnswer.set(null);
-    this.hasValidated.set(true); // Optionnel
+    this.nextRequested.emit();
+    // Reset de l'état local
+    this.selectedOption.set(null);
+    this.hasValidated.set(false);
   }
 }

@@ -1,39 +1,32 @@
-<div class="question-card">
-  <h3>{{ question().question_french }}</h3>
+<div>
+  <div>{{ questionData().question_french }}</div>
 
-  <div class="options-list">
-    @for (letter of ['a', 'b', 'c', 'd']; track letter) {
-      <button
-        class="option-btn"
-        [class.selected]="selectedAnswer() === letter"
-        [class.correct]="
-          hasValidated() && showResultAtSelection() && question().correct_answer_french === letter
-        "
-        [class.wrong]="
+  <div>
+    @for (opt of options(); track opt.label) {
+      <div
+        [class.is-selected]="selectedOption()?.label === opt.label"
+        [class.is-correct]="hasValidated() && showResultAtSelection() && opt.isCorrect"
+        [class.is-wrong]="
           hasValidated() &&
           showResultAtSelection() &&
-          selectedAnswer() === letter &&
-          question().correct_answer_french !== letter
+          selectedOption()?.label === opt.label &&
+          !opt.isCorrect
         "
-        (click)="onSelect(letter)"
+        (click)="onSelect(opt)"
       >
-        <span class="letter">{{ letter | uppercase }}.</span>
-        <span class="text">{{ $any(question())['reponse_' + letter] }}</span>
-      </button>
+        <span>{{ opt.label }}</span>
+        <span>{{ opt.text }}</span>
+      </div>
     }
   </div>
 
-  <div class="actions">
+  <div>
     @if (!hasValidated()) {
-      <app-button (click)="onValidate()" [disabled]="!selectedAnswer()"> Valider </app-button>
+      <app-button variant="primary" [disabled]="!selectedOption()" (click)="onValidate()">
+        Valider la réponse
+      </app-button>
     } @else {
-      <app-button (click)="onNext()"> Suivant </app-button>
+      <app-button variant="secondary" (click)="onNext()"> Question suivante </app-button>
     }
   </div>
-
-  @if (hasValidated() && showResultAtSelection()) {
-    <div class="feedback" [class.success]="isCorrect()" [class.error]="!isCorrect()">
-      {{ isCorrect() ? '✅ Bonne réponse !' : '❌ Mauvaise réponse.' }}
-    </div>
-  }
 </div>
