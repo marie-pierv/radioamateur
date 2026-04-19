@@ -7,11 +7,12 @@ import { Button } from '../../shared/button/button';
 import { Form } from '../../shared/form/form';
 import { ExamSetup } from '../../shared/exam-setup/exam-setup';
 import { Card } from '../../shared/card/card';
+import { Quicklinks } from '../../shared/quicklinks/quicklinks';
 
 @Component({
   selector: 'app-exam-generator',
   standalone: true,
-  imports: [RouterOutlet, Label, Button, Form, ExamSetup, Card],
+  imports: [RouterOutlet, Label, Button, Form, ExamSetup, Card, Quicklinks],
   templateUrl: './exam-generator.html',
   styleUrl: './exam-generator.scss',
 })

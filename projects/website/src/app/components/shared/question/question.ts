@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component, input, output, signal, computed } from '@angular/core';
 import { Button } from '../button/button';
 import { Questions } from '../../../interfaces/questions';
 
 @Component({
   selector: 'app-question',
-  imports: [Button],
+  imports: [Button, UpperCasePipe],
   templateUrl: './question.html',
   styleUrl: './question.scss',
 })

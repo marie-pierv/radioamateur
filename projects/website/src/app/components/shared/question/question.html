@@ -18,7 +18,7 @@
         (click)="onSelect(letter)"
       >
         <span class="letter">{{ letter | uppercase }}.</span>
-        <span class="text">{{ question()['reponse_' + letter] }}</span>
+        <span class="text">{{ $any(question())['reponse_' + letter] }}</span>
       </button>
     }
   </div>
