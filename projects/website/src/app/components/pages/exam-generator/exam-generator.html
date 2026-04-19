@@ -3,9 +3,22 @@
 <div class="exam-container">
   <app-card class="exam-container__card">
     @if (!isExamStarted()) {
-      <app-form-start-exam (onStart)="isExamStarted.set(true)"></app-form-start-exam>
+      <app-form-start-exam (onStart)="startExam($event)"></app-form-start-exam>
     } @else {
       <app-exam-display></app-exam-display>
+    }
+  </app-card>
+  <app-card class="exam-container__card">
+    @if (isExamStarted()) {
+      <app-exam-progress [current]="practiceExam.currentIdx()" [total]="quantity()">
+      </app-exam-progress>
+      <div>
+        Section actuelle : <strong>{{ selectedCategory() }}</strong>
+      </div>
+    } @else {
+      <div>
+        <p>Sélectionnez vos paramètres à gauche pour débuter votre pratique d'examen.</p>
+      </div>
     }
   </app-card>
 </div>

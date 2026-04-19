@@ -25,18 +25,10 @@ export class FormStartExam implements OnInit {
     // Ajoute les autres ici...
   ];
 
-  onStart = output<void>(); //Communique avec parent
-
+  onStart = output<{ category: string; quantity: number }>();
   selectedCategory = signal<string>('');
-  currentQuestionLabel = signal<string>('');
-  currentAnswers = signal<string[]>([]);
-  selectedAnswer = signal<string>('');
-  feedback = signal<string>(''); // Message de succès ou d'erreur
-  currentId = '';
   quantity = signal<number>(10);
   examEnd = signal<boolean>(false);
-  questionsAnswered = signal<number>(0);
-  hasValidated = signal<boolean>(false);
   isExamStarted = signal<boolean>(false);
 
   constructor(public practiceExam: PracticeExam) {}
@@ -45,34 +37,16 @@ export class FormStartExam implements OnInit {
 
   startExam() {
     const cat = this.selectedCategory();
+    const qty = this.quantity();
+
     if (!cat) return;
 
-    this.practiceExam.startNewExam(this.quantity(), [cat]);
+    this.practiceExam.startNewExam(qty, [cat]);
 
-    this.isExamStarted.set(true);
-    this.examEnd.set(false);
-
-    this.questionsAnswered.set(0);
-    this.hasValidated.set(false);
-    this.feedback.set('');
-    this.onStart.emit();
-  }
-  reset() {
-    this.isExamStarted.set(false);
-    this.examEnd.set(false);
-    this.selectedCategory.set('');
-  }
-
-  loadQuestionByCategory() {
-    //Compteur
-    this.questionsAnswered.update((n) => n + 1);
-    if (this.questionsAnswered() >= this.quantity()) {
-      this.examEnd.set(true);
-      return;
-    }
-    this.feedback.set('');
-    this.selectedAnswer.set('');
-    this.hasValidated.set(false);
+    this.onStart.emit({
+      category: cat,
+      quantity: qty,
+    });
   }
 
   onCategoryChange(event: Event) {
