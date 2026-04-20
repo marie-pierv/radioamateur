@@ -1,43 +1,30 @@
 <div class="exam-container">
-  @if (!isStarted()) {
-    <div class="setup-card">
-      <h1>Pratique d'examen Radio Amateur</h1>
+  <app-card class="exam-container__card">
+    @if (!isStarted()) {
+      <app-form-start-exam (onStart)="startExam($event)"></app-form-start-exam>
+    } @else if (!isFinished()) {
+      <app-exam-display
+        [questionData]="sessionQuestions()[currentIndex()]"
+        (nextRequested)="goToNext()"
+      >
+      </app-exam-display>
+    } @else {
+      <div class="result-card">
+        <h2>Examen terminé !</h2>
+        <app-button (click)="reset()">Recommencer</app-button>
+      </div>
+    }
+  </app-card>
 
-      <label>Choisir une catégorie :</label>
-      <select (change)="selectedCategory.set($any($event.target).value)">
-        @for (cat of categories; track cat.code) {
-          <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
-        }
-      </select>
-
-      <label>Nombre de questions :</label>
-      <input
-        type="number"
-        [value]="quantity()"
-        (input)="quantity.set($any($event.target).valueAsNumber)"
-      />
-
-      <app-button variant="primary" (click)="startExam()">Démarrer la session</app-button>
-    </div>
-  } @else if (isStarted() && !isFinished()) {
-    <div class="quiz-header">
-      <span>Catégorie : {{ selectedCategory() }}</span>
-      <span>Question {{ currentIndex() + 1 }} / {{ sessionQuestions().length }}</span>
-    </div>
-
-    <app-question
-      [questionData]="sessionQuestions()[currentIndex()]"
-      [showResultAtSelection]="true"
-      (validatedAnswer)="handleAnswer($event)"
-      (nextRequested)="goToNext()"
-    >
-    </app-question>
-  } @else if (isFinished()) {
-    <div class="result-card">
-      <h2>Session terminée !</h2>
-      <p>Vous avez complété les {{ sessionQuestions().length }} questions.</p>
-
-      <app-button (click)="reset()">Retour au menu</app-button>
-    </div>
-  }
+  <app-card class="exam-container__card">
+    @if (practiceExam.totalQuestions() > 0) {
+      <app-exam-progress
+        [current]="practiceExam.currentIdx()"
+        [total]="practiceExam.totalQuestions()"
+      >
+      </app-exam-progress>
+    } @else {
+      <p>Sélectionnez vos paramètres pour débuter.</p>
+    }
+  </app-card>
 </div>

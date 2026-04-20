@@ -1,10 +1,6 @@
 <div class="exam">
-  <!-- <app-title variant="p-large" class="progress"
-    >Question {{ questionsAnswered() + 1 }} sur {{ quantity() }}</app-title
-  > -->
-
   <app-title variant="h3">
-    {{ currentQuestionLabel() }}
+    {{ questionData().question_french }}
   </app-title>
 
   <div class="exam__answers-grid">
@@ -25,6 +21,7 @@
     @if (feedback()) {
       <p class="feedback-text">{{ feedback() }}</p>
     }
+
     @if (!hasValidated()) {
       <app-button variant="tile" (click)="verifierReponse()" [disabled]="!selectedAnswer()">
         <span>Valider la réponse</span>
@@ -32,10 +29,8 @@
     }
 
     @if (hasValidated()) {
-      <app-button (click)="loadQuestionByCategory()" variant="tile" class="btn-next">
-        <span>
-          {{ questionsAnswered() + 1 < quantity() ? 'Question Suivante' : "Terminer l'examen" }}
-        </span>
+      <app-button (click)="onNext()" variant="tile" class="btn-next">
+        <span>Continuer</span>
       </app-button>
     }
   </div>

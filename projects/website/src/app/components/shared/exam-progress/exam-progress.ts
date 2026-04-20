@@ -22,15 +22,17 @@ import { CommonModule } from '@angular/common';
   styleUrl: './exam-progress.scss',
 })
 export class ExamProgress {
-  // Inputs sous forme de Signals
-  current = input.required<number>(); // L'index actuel (ex: 0, 1, 2...)
-  total = input.required<number>(); // Le total choisi (ex: 10, 20...)
+  current = input<number>(0);
+  total = input<number>(0);
 
-  // Calcul automatique du pourcentage
+  // Calcul de pourcentage
   percentage = computed(() => {
-    if (this.total() <= 0) return 0;
-    // On fait +1 car l'index commence à 0, mais on veut montrer l'avancement de la question en cours
-    const progress = (this.current() / this.total()) * 100;
-    return Math.min(progress, 100); // On ne dépasse jamais 100%
+    const t = this.total();
+    const c = this.current();
+
+    if (t <= 0) return 0;
+
+    const progress = (c / t) * 100;
+    return Math.min(progress, 100);
   });
 }

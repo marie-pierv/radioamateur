@@ -9,10 +9,7 @@ export const routes: Routes = [
   {
     path: '',
     component: Default,
-    children: [
-      { path: '', component: Home },
-      // { path: 'examens', component: ExamGenerator },
-    ],
+    children: [{ path: '', component: Home }],
   },
   {
     path: 'dashboard',
@@ -27,14 +24,14 @@ export const routes: Routes = [
         component: Outils,
         data: {
           quicklinks: [
-            { label: 'Réviser par chapitre', link: '/outils', type: 'internal' },
+            { label: 'Réviser par chapitre', link: 'dashboard/outils/chapitres', type: 'internal' },
             {
               label: 'Réviser les questions manquées',
-              link: '/dashboard/outils',
+              link: '/dashboard/revision',
               type: 'internal',
             },
-            { label: "Faire une pratique d'examen", link: '/outils', type: 'internal' }, // Outils a remplacer par le layout qui va afficher ses components
-            { label: 'Calculateurs', link: '/outils', type: 'internal' },
+            { label: "Faire une pratique d'examen", link: '/dashboard/examen', type: 'internal' }, // Outils a remplacer par le layout qui va afficher ses components
+            { label: 'Calculateurs', link: '/dashboard/calculateurs', type: 'internal' },
             { label: 'Obtenir son certificat', link: 'https://rac.ca', type: 'external' },
           ],
         },

@@ -1,13 +1,12 @@
 import { Component, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../button/button';
-import { ExamDisplay } from '../exam-display/exam-display';
 import { Title } from '../title/title';
 
 @Component({
   selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Button, ExamDisplay, Title],
+  imports: [Button, Title],
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
@@ -41,7 +40,7 @@ export class FormStartExam implements OnInit {
 
     if (!cat) return;
 
-    this.practiceExam.startNewExam(qty, [cat]);
+    // this.practiceExam.startNewExam(qty, [cat]);
 
     this.onStart.emit({
       category: cat,
