@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="progress-wrapper">
       <div class="progress-info">
-        <span>Progression</span>
         <span class="count">Question {{ current() + 1 }} sur {{ total() }}</span>
       </div>
 
