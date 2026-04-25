@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 interface QuestionExamState {
   [question_id: string]: string; // questionId -> réponse sélectionnée
@@ -7,90 +7,95 @@ interface QuestionExamState {
 export interface ExamState {
   questions: QuestionExamState;
   score: number;
+  total: number;
+  categories: string[];
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class PracticeExam {
+  private readonly localStorageKey = 'currentExam';
+
   selectedCategories = signal<string[]>([]);
-  currentIdx = signal<number>(0);
   totalQuestions = signal<number>(0);
-  localStorageKey = 'currentExam'; // Public par défaut, accessible partout
+  answers = signal<Map<string, string>>(new Map());
+  score = signal<number>(0);
 
-  startNewExam(numberOfQuestions: number, categories: string[]) {
-    // On mémorise les catégories dans le signal
-    this.totalQuestions.set(numberOfQuestions);
+  // Nombre de questions répondues
+  countAnswered = computed(() => this.answers().size);
+  progressPercent = computed(() => {
+    const total = this.totalQuestions();
+    return total > 0 ? (this.countAnswered() / total) * 100 : 0;
+  });
+
+  successRate = computed(() => {
+    const answered = this.countAnswered();
+    return answered > 0 ? (this.score() / answered) * 100 : 0;
+  });
+
+  correctAnswersCount = computed(() => this.score());
+
+  constructor() {
+    this.loadFromStorage();
+  }
+  private loadFromStorage() {
+    const saved = localStorage.getItem(this.localStorageKey);
+    if (saved) {
+      const state: ExamState = JSON.parse(saved);
+      // On remplit les signals avec ce qu'on a trouvé
+      this.score.set(state.score || 0);
+      this.totalQuestions.set(state.total || 0);
+      this.selectedCategories.set(state.categories || []);
+
+      // Conversion de l'objet {} en Map() pour le signal
+      const savedMap = new Map(Object.entries(state.questions));
+      this.answers.set(savedMap);
+    }
+  }
+
+  startNewExam(quantity: number, categories: string[]) {
+    console.log('🚀 BOOM ! Quantité reçue :', quantity);
+    localStorage.removeItem(this.localStorageKey);
+    // Mémorise les catégories dans le signal
     this.selectedCategories.set(categories);
-    this.currentIdx.set(0);
-
-    console.log(`✅ Service : Examen démarré avec ${numberOfQuestions} questions.`);
+    this.totalQuestions.set(quantity);
+    this.answers.set(new Map());
+    this.score.set(0);
 
     const initialState: ExamState = {
       questions: {},
       score: 0,
+      total: quantity,
+      categories: categories,
     };
-    this.saveExamState(initialState);
-    console.log(
-      `✅ Examen initialisé : ${numberOfQuestions} questions, catégories : ${categories.join(', ')}`,
-    );
+    localStorage.setItem(this.localStorageKey, JSON.stringify(initialState));
+    //this.saveExamState(initialState);
   }
-
-  goToNextQuestion() {
-    this.currentIdx.update((val) => val + 1);
-  }
-
-  resetExam() {
-    this.totalQuestions.set(0);
-    this.currentIdx.set(0);
-    this.selectedCategories.set([]);
-  }
-
-  constructor() {
-    // this.testService();
-  }
-
-  // Logique pour démarrer un nouvel examen avec le nombre de questions et les catégories sélectionnées
-  // startNewExam(numberOfQuestions: number, categories: string[]) {
-  //   console.log(
-  //     `Démarrage d'un nouvel examen avec ${numberOfQuestions} questions dans les catégories: ${categories.join(', ')}`,
-  //   );
-  //   const initialState: ExamState = {
-  //     questions: {},
-  //     score: 0,
-  //   };
-
-  //   this.saveExamState(initialState);
-  // }
 
   // Logique pour sauvegarder la réponse de l'utilisateur
   saveExamState(state: ExamState): void {
     localStorage.setItem(this.localStorageKey, JSON.stringify(state));
   }
 
-  //Récupère l'état sauvegardé (Conversion String JSON -> Objet)
-  getExamState(): ExamState | null {
-    const saved = localStorage.getItem(this.localStorageKey);
-    return saved ? JSON.parse(saved) : null;
-  }
-
   //Met à jour une seule réponse sans effacer le reste
-  updateAnswer(question_id: string, answer: string): void {
-    const currentState = this.getExamState();
-    if (currentState) {
-      currentState.questions[question_id] = answer;
-      this.saveExamState(currentState);
-    }
-  }
+  updateAnswer(question_id: string, answer: string, isCorrect: boolean): void {
+    this.answers.update((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(question_id, answer);
+      return newMap;
+    });
 
-  /// Si question on retourne la réponse, sinon null
-  getSavedAnswerForQuestion(question_id: string): string | null {
-    const state = this.getExamState();
-
-    if (state && state.questions && state.questions[question_id]) {
-      return state.questions[question_id];
+    if (isCorrect) {
+      this.score.update((v) => v + 1);
     }
 
-    return null;
+    const state: ExamState = {
+      questions: Object.fromEntries(this.answers()), // Convertit la Map en objet
+      score: this.score(),
+      total: this.totalQuestions(),
+      categories: this.selectedCategories(),
+    };
+    localStorage.setItem(this.localStorageKey, JSON.stringify(state));
   }
 }

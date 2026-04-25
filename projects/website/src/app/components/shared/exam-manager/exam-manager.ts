@@ -67,8 +67,9 @@ export class ExamManager {
   handleAnswer(answerText: string) {
     const currentQ = this.sessionQuestions()[this.currentIndex()];
     if (currentQ) {
+      const isCorrect = this.questionService.isCorrect(currentQ, answerText, 'fr');
       // On enregistre la réponse dans le service PracticeExam
-      this.practiceExam.updateAnswer(currentQ.question_id, answerText);
+      this.practiceExam.updateAnswer(currentQ.question_id, answerText, isCorrect);
     }
   }
 

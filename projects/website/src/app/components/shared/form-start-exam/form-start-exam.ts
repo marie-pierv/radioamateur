@@ -1,16 +1,18 @@
-import { Component, OnInit, output, signal } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../button/button';
+import { ExamDisplay } from '../exam-display/exam-display';
 import { Title } from '../title/title';
 
 @Component({
   selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Button, Title],
+  imports: [Button, ExamDisplay, Title],
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
 export class FormStartExam implements OnInit {
+  private practiceExam = inject(PracticeExam);
   // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
@@ -24,28 +26,52 @@ export class FormStartExam implements OnInit {
     // Ajoute les autres ici...
   ];
 
-  onStart = output<{ category: string; quantity: number }>();
-  selectedCategory = signal<string>('');
-  quantity = signal<number>(10);
-  examEnd = signal<boolean>(false);
-  isExamStarted = signal<boolean>(false);
+  onStart = output<void>(); //Communique avec parent
 
-  constructor(public practiceExam: PracticeExam) {}
+  selectedCategory = signal<string>('');
+  currentQuestionLabel = signal<string>('');
+  currentAnswers = signal<string[]>([]);
+  selectedAnswer = signal<string>('');
+  feedback = signal<string>(''); // Message de succès ou d'erreur
+  currentId = '';
+  quantity = signal<number>(50);
+  examEnd = signal<boolean>(false);
+  questionsAnswered = signal<number>(0);
+  hasValidated = signal<boolean>(false);
+  isExamStarted = signal<boolean>(false);
 
   ngOnInit() {}
 
   startExam() {
-    const cat = this.selectedCategory();
-    const qty = this.quantity();
+    if (this.selectedCategory()) {
+      this.practiceExam.startNewExam(this.quantity(), [this.selectedCategory()]);
 
-    if (!cat) return;
+      this.isExamStarted.set(true);
+      this.examEnd.set(false);
+      this.questionsAnswered.set(0);
+      this.hasValidated.set(false);
+      this.feedback.set('');
 
-    // this.practiceExam.startNewExam(qty, [cat]);
+      // Prévient le parent
+      this.onStart.emit();
+    }
+  }
+  reset() {
+    this.isExamStarted.set(false);
+    this.examEnd.set(false);
+    this.selectedCategory.set('');
+  }
 
-    this.onStart.emit({
-      category: cat,
-      quantity: qty,
-    });
+  loadQuestionByCategory() {
+    //Compteur
+    this.questionsAnswered.update((n) => n + 1);
+    if (this.questionsAnswered() >= this.quantity()) {
+      this.examEnd.set(true);
+      return;
+    }
+    this.feedback.set('');
+    this.selectedAnswer.set('');
+    this.hasValidated.set(false);
   }
 
   onCategoryChange(event: Event) {
@@ -53,7 +79,7 @@ export class FormStartExam implements OnInit {
     this.selectedCategory.set(selectElement.value);
   }
   onQuantityChange(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    this.quantity.set(parseInt(selectElement.value, 10));
+    const value = (event.target as HTMLSelectElement).value;
+    this.quantity.set(Number(value));
   }
 }

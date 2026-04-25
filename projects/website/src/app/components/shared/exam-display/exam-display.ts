@@ -1,9 +1,8 @@
-import { Component, signal, input, effect, output } from '@angular/core';
+import { Component, OnInit, signal, model, input } from '@angular/core';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../../shared/button/button';
 import { Title } from '../title/title';
-import { Questions } from '../../../interfaces/questions';
 
 @Component({
   selector: 'app-exam-display',
@@ -11,64 +10,90 @@ import { Questions } from '../../../interfaces/questions';
   templateUrl: './exam-display.html',
   styleUrl: './exam-display.scss',
 })
-export class ExamDisplay {
-  questionData = input.required<Questions>();
-  nextRequested = output<void>();
-
+export class ExamDisplay implements OnInit {
+  selectedCategory = model<string>('');
+  currentQuestionLabel = signal<string>('');
   currentAnswers = signal<string[]>([]);
   selectedAnswer = signal<string>('');
   feedback = signal<string>(''); // Message de succès ou d'erreur
+  currentId = '';
+  quantity = model<number>(10);
+  examEnd = signal<boolean>(false);
+  questionsAnswered = signal<number>(0);
   hasValidated = signal<boolean>(false);
+  isSelected = input<boolean>(false);
 
-  constructor(
-    private questionService: ServiceQuestions,
-    public practiceExam: PracticeExam,
-  ) {
-    effect(() => {
-      //// Observateur - surveille tout changement nettoie l'interface pour la prochaine question
-      const q = this.questionData();
-      this.resetDisplay(q);
-    });
+  getLetter(index: number): string {
+    return String.fromCharCode(65 + index); /// 65 = A
   }
 
   onSelect(answer: string) {
-    // On ne permet de changer la sélection que si on n'a pas encore validé
     if (!this.hasValidated()) {
       this.selectedAnswer.set(answer);
     }
   }
 
-  private resetDisplay(q: Questions) {
-    this.selectedAnswer.set('');
+  constructor(
+    private questionService: ServiceQuestions,
+    public practiceExam: PracticeExam,
+  ) {}
+
+  ngOnInit() {
+    const cat = this.practiceExam.selectedCategories()[0];
+    if (cat) {
+      this.loadQuestion(cat);
+    }
+  }
+
+  loadQuestionByCategory() {
+    //Compteur
+    this.questionsAnswered.update((n) => n + 1);
+
+    if (this.questionsAnswered() >= this.practiceExam.totalQuestions()) {
+      this.examEnd.set(true);
+      return;
+    }
+
     this.feedback.set('');
+    this.selectedAnswer.set('');
     this.hasValidated.set(false);
 
-    this.questionService.getRandomizedAnswersForQuestion(q.question_id).subscribe((answers) => {
-      this.currentAnswers.set(answers);
+    this.loadQuestion(this.selectedCategory());
+  }
+  // On utilise ton service spécialisé pour les catégories
+  private loadQuestion(cat: string) {
+    this.questionService.getRandomQuestionOfCategory(cat).subscribe((id) => {
+      if (id) {
+        this.currentId = id;
+        this.questionService.getLabelForQuestion(id).subscribe((label) => {
+          this.currentQuestionLabel.set(label);
+        });
+
+        // Charger les réponses mélangées
+        this.questionService.getRandomizedAnswersForQuestion(id).subscribe((answers) => {
+          this.currentAnswers.set(answers);
+        });
+      }
     });
   }
 
   // La fonction pour vérifier les réponses
   verifierReponse() {
-    const q = this.questionData();
     if (!this.selectedAnswer() || this.hasValidated()) return;
 
-    const isCorrect = this.questionService.isCorrect(q, this.selectedAnswer(), 'fr');
+    this.questionService.getQuestions().subscribe((questions) => {
+      const q = questions.find((item) => item.question_id === this.currentId);
+      if (q) {
+        const isCorrect = this.questionService.isCorrect(q, this.selectedAnswer(), 'fr');
 
-    this.feedback.set(
-      isCorrect ? '✅ Bonne réponse !' : `❌ Erreur. La réponse était : ${q.correct_answer_french}`,
-    );
-
-    // Sauvegarde dans le service/LocalStorage
-    this.practiceExam.updateAnswer(q.question_id, this.selectedAnswer());
-    this.hasValidated.set(true);
-  }
-
-  onNext() {
-    this.nextRequested.emit();
-  }
-
-  getLetter(index: number): string {
-    return String.fromCharCode(65 + index);
+        this.feedback.set(
+          isCorrect
+            ? '✅ Bonne réponse !'
+            : `❌ Erreur. La réponse était : ${q.correct_answer_french}`,
+        );
+        this.practiceExam.updateAnswer(this.currentId, this.selectedAnswer(), isCorrect);
+        this.hasValidated.set(true);
+      }
+    });
   }
 }

@@ -1,1 +1,19 @@
-<p>exam-progress works!</p>
+<div>
+  <div>
+    <span>
+      Question <strong>{{ questionsAnswered() }}</strong> sur {{ totalQuestions() }}
+    </span>
+
+    <span>
+      Score actuel : <br /><strong>{{ successRate() }}%</strong>
+    </span>
+  </div>
+
+  <div>
+    <div [style.width.%]="progressPercentage()">
+      <span>
+        <strong>{{ correctAnswersCount() }}</strong> sur {{ totalQuestions() }}
+      </span>
+    </div>
+  </div>
+</div>
