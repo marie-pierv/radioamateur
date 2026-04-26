@@ -34,7 +34,7 @@ export class FormStartExam implements OnInit {
   selectedAnswer = signal<string>('');
   feedback = signal<string>(''); // Message de succès ou d'erreur
   currentId = '';
-  quantity = signal<number>(50);
+  quantity = signal<number>(10);
   examEnd = signal<boolean>(false);
   questionsAnswered = signal<number>(0);
   hasValidated = signal<boolean>(false);
