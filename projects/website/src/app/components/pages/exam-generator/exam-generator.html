@@ -1,11 +1,7 @@
-<router-outlet />
-
-<div class="exam-container">
-  <app-card class="exam-container__card">
-    @if (!isExamStarted()) {
-      <app-form-start-exam (onStart)="isExamStarted.set(true)"></app-form-start-exam>
-    } @else {
-      <app-exam-display></app-exam-display>
-    }
-  </app-card>
+<div class="exam-page">
+  <div class="exam-layout">
+    <section class="exam-layout__main">
+      <app-exam-manager></app-exam-manager>
+    </section>
+  </div>
 </div>

@@ -1,0 +1,13 @@
+<div class="quicklinks">
+  @for (item of links(); track item.label) {
+    @if (item.type === 'internal') {
+      <a class="quicklinks__button" [routerLink]="item.link">
+        {{ item.label }}
+      </a>
+    } @else {
+      <a class="quicklinks__button" [href]="item.link" target="_blank" rel="noopener noreferrer">
+        {{ item.label }}
+      </a>
+    }
+  }
+</div>

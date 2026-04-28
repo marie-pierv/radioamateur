@@ -1,0 +1,22 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.quicklinks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+
+  &__button {
+    color: $color-text;
+    background-color: $color-accent;
+    text-align: center;
+    font-weight: 800;
+    width: 100%;
+    padding: 5px 15px;
+  }
+}

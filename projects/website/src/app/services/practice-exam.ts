@@ -14,12 +14,17 @@ export interface ExamState {
 })
 export class PracticeExam {
   selectedCategories = signal<string[]>([]);
-
+  currentIdx = signal<number>(0);
+  totalQuestions = signal<number>(0);
   localStorageKey = 'currentExam'; // Public par défaut, accessible partout
 
   startNewExam(numberOfQuestions: number, categories: string[]) {
     // On mémorise les catégories dans le signal
+    this.totalQuestions.set(numberOfQuestions);
     this.selectedCategories.set(categories);
+    this.currentIdx.set(0);
+
+    console.log(`✅ Service : Examen démarré avec ${numberOfQuestions} questions.`);
 
     const initialState: ExamState = {
       questions: {},
@@ -29,6 +34,16 @@ export class PracticeExam {
     console.log(
       `✅ Examen initialisé : ${numberOfQuestions} questions, catégories : ${categories.join(', ')}`,
     );
+  }
+
+  goToNextQuestion() {
+    this.currentIdx.update((val) => val + 1);
+  }
+
+  resetExam() {
+    this.totalQuestions.set(0);
+    this.currentIdx.set(0);
+    this.selectedCategories.set([]);
   }
 
   constructor() {
