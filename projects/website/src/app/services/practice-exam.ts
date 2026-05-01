@@ -17,6 +17,7 @@ export interface ExamState {
 export class PracticeExam {
   private readonly localStorageKey = 'currentExam';
 
+  currentIdx = signal<number>(0);
   selectedCategories = signal<string[]>([]);
   totalQuestions = signal<number>(0);
   answers = signal<Map<string, string>>(new Map());
@@ -57,7 +58,9 @@ export class PracticeExam {
   startNewExam(quantity: number, categories: string[]) {
     console.log('🚀 BOOM ! Quantité reçue :', quantity);
     localStorage.removeItem(this.localStorageKey);
-    // Mémorise les catégories dans le signal
+    // Mémorise les catégories dans le signa
+    this.selectedCategories.set(categories);
+    this.currentIdx.set(0);
     this.selectedCategories.set(categories);
     this.totalQuestions.set(quantity);
     this.answers.set(new Map());

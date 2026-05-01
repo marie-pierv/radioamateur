@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, input } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { CommonModule } from '@angular/common';
 import { Button } from '../button/button';
@@ -6,14 +6,17 @@ import { Title } from '../title/title';
 
 @Component({
   selector: 'app-exam-progress',
+  standalone: true,
   imports: [CommonModule, Button, Title],
   template: `<p>exam-progress works!</p>`,
   templateUrl: './exam-progress.html',
   styleUrl: './exam-progress.scss',
 })
 export class ExamProgress {
-  // private practice = inject(PracticeExam);
   protected practice = inject(PracticeExam);
+
+  current = input.required<number>();
+  total = input.required<number>();
 
   //Signaux basés sur le service PracticeExam
   questionsAnswered = this.practice.countAnswered;

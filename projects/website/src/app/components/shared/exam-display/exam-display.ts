@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, model, input } from '@angular/core';
+import { Component, OnInit, signal, model, input, output, effect } from '@angular/core';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../../shared/button/button';
 import { Title } from '../title/title';
+import { Questions } from '../../../interfaces/questions';
 
 @Component({
   selector: 'app-exam-display',
@@ -11,17 +12,41 @@ import { Title } from '../title/title';
   styleUrl: './exam-display.scss',
 })
 export class ExamDisplay implements OnInit {
-  selectedCategory = model<string>('');
   currentQuestionLabel = signal<string>('');
   currentAnswers = signal<string[]>([]);
   selectedAnswer = signal<string>('');
   feedback = signal<string>(''); // Message de succès ou d'erreur
   currentId = '';
-  quantity = model<number>(10);
-  examEnd = signal<boolean>(false);
-  questionsAnswered = signal<number>(0);
   hasValidated = signal<boolean>(false);
-  isSelected = input<boolean>(false);
+
+  constructor(
+    private questionService: ServiceQuestions,
+    public practiceExam: PracticeExam,
+  ) {}
+
+  ngOnInit() {
+    this.loadNextQuestion();
+  }
+
+  loadNextQuestion() {
+    // 2. On va chercher la catégorie dans le service plutôt que dans un input
+    const categories = this.practiceExam.selectedCategories();
+    const cat = categories.length > 0 ? categories[0] : '';
+
+    // Vérification de fin via le service
+    if (this.practiceExam.countAnswered() >= this.practiceExam.totalQuestions()) {
+      // Tu peux gérer la fin ici ou via un signal dans le service
+      return;
+    }
+
+    this.feedback.set('');
+    this.selectedAnswer.set('');
+    this.hasValidated.set(false);
+
+    if (cat) {
+      this.loadQuestion(cat);
+    }
+  }
 
   getLetter(index: number): string {
     return String.fromCharCode(65 + index); /// 65 = A
@@ -33,51 +58,20 @@ export class ExamDisplay implements OnInit {
     }
   }
 
-  constructor(
-    private questionService: ServiceQuestions,
-    public practiceExam: PracticeExam,
-  ) {}
-
-  ngOnInit() {
-    const cat = this.practiceExam.selectedCategories()[0];
-    if (cat) {
-      this.loadQuestion(cat);
-    }
-  }
-
-  loadQuestionByCategory() {
-    //Compteur
-    this.questionsAnswered.update((n) => n + 1);
-
-    if (this.questionsAnswered() >= this.practiceExam.totalQuestions()) {
-      this.examEnd.set(true);
-      return;
-    }
-
-    this.feedback.set('');
-    this.selectedAnswer.set('');
-    this.hasValidated.set(false);
-
-    this.loadQuestion(this.selectedCategory());
-  }
-  // On utilise ton service spécialisé pour les catégories
   private loadQuestion(cat: string) {
     this.questionService.getRandomQuestionOfCategory(cat).subscribe((id) => {
       if (id) {
         this.currentId = id;
-        this.questionService.getLabelForQuestion(id).subscribe((label) => {
-          this.currentQuestionLabel.set(label);
-        });
-
-        // Charger les réponses mélangées
-        this.questionService.getRandomizedAnswersForQuestion(id).subscribe((answers) => {
-          this.currentAnswers.set(answers);
-        });
+        this.questionService
+          .getLabelForQuestion(id)
+          .subscribe((l) => this.currentQuestionLabel.set(l));
+        this.questionService
+          .getRandomizedAnswersForQuestion(id)
+          .subscribe((a) => this.currentAnswers.set(a));
       }
     });
   }
 
-  // La fonction pour vérifier les réponses
   verifierReponse() {
     if (!this.selectedAnswer() || this.hasValidated()) return;
 
@@ -88,9 +82,11 @@ export class ExamDisplay implements OnInit {
 
         this.feedback.set(
           isCorrect
-            ? '✅ Bonne réponse !'
-            : `❌ Erreur. La réponse était : ${q.correct_answer_french}`,
+            ? '✅ Bonne réponse!'
+            : `❌ Erreur! La bonne réponse est : ${q.correct_answer_french}`,
         );
+
+        // On met à jour le service
         this.practiceExam.updateAnswer(this.currentId, this.selectedAnswer(), isCorrect);
         this.hasValidated.set(true);
       }

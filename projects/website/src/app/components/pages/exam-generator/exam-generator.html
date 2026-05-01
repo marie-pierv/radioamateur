@@ -1,5 +1,4 @@
 <router-outlet />
-
 <div class="exam-container">
   <app-card class="exam-container__card gauche">
     @if (!isExamStarted()) {
@@ -11,9 +10,16 @@
       <app-exam-display class="exam-container__card__form"></app-exam-display>
     }
   </app-card>
+
   @if (isExamStarted()) {
     <app-card class="exam-container__card droit">
-      <app-exam-progress class="exam-container__card__progress"></app-exam-progress>
+      <!-- On passe les données du service ici aussi -->
+      <app-exam-progress
+        class="exam-container__card__progress"
+        [current]="practiceExam.countAnswered()"
+        [total]="practiceExam.totalQuestions()"
+      >
+      </app-exam-progress>
     </app-card>
   }
 </div>

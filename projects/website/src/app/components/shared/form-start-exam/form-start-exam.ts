@@ -11,8 +11,11 @@ import { Title } from '../title/title';
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
-export class FormStartExam implements OnInit {
+export class FormStartExam {
   private practiceExam = inject(PracticeExam);
+
+  onStart = output<void>();
+
   // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
@@ -26,52 +29,19 @@ export class FormStartExam implements OnInit {
     // Ajoute les autres ici...
   ];
 
-  onStart = output<void>(); //Communique avec parent
-
   selectedCategory = signal<string>('');
-  currentQuestionLabel = signal<string>('');
-  currentAnswers = signal<string[]>([]);
-  selectedAnswer = signal<string>('');
-  feedback = signal<string>(''); // Message de succès ou d'erreur
-  currentId = '';
   quantity = signal<number>(10);
-  examEnd = signal<boolean>(false);
-  questionsAnswered = signal<number>(0);
-  hasValidated = signal<boolean>(false);
   isExamStarted = signal<boolean>(false);
-
-  ngOnInit() {}
 
   startExam() {
     if (this.selectedCategory()) {
       this.practiceExam.startNewExam(this.quantity(), [this.selectedCategory()]);
 
       this.isExamStarted.set(true);
-      this.examEnd.set(false);
-      this.questionsAnswered.set(0);
-      this.hasValidated.set(false);
-      this.feedback.set('');
 
       // Prévient le parent
       this.onStart.emit();
     }
-  }
-  reset() {
-    this.isExamStarted.set(false);
-    this.examEnd.set(false);
-    this.selectedCategory.set('');
-  }
-
-  loadQuestionByCategory() {
-    //Compteur
-    this.questionsAnswered.update((n) => n + 1);
-    if (this.questionsAnswered() >= this.quantity()) {
-      this.examEnd.set(true);
-      return;
-    }
-    this.feedback.set('');
-    this.selectedAnswer.set('');
-    this.hasValidated.set(false);
   }
 
   onCategoryChange(event: Event) {
@@ -81,5 +51,9 @@ export class FormStartExam implements OnInit {
   onQuantityChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.quantity.set(Number(value));
+  }
+  reset() {
+    this.isExamStarted.set(false);
+    this.selectedCategory.set('');
   }
 }

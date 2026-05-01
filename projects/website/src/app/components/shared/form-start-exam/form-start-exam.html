@@ -26,10 +26,7 @@
         </app-button>
       </div>
     </div>
-  } @else if (!examEnd()) {
-    <div class="quiz-area">
-      <app-exam-display [selectedCategory]="selectedCategory()" [quantity]="quantity()">
-      </app-exam-display>
-    </div>
+  } @else {
+    <app-exam-display></app-exam-display>
   }
 </div>
