@@ -1,0 +1,40 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.bloc-jaune {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-accent;
+  gap: 40px;
+  padding: 40px 82px;
+
+  &__titre {
+    color: white;
+  }
+
+  &__container {
+    display: flex;
+    gap: 50px;
+
+    &__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+
+      &__icon {
+        width: 160px;
+      }
+
+      &__text {
+        text-align: center;
+        color: white;
+        font-weight: 800;
+      }
+    }
+  }
+}
