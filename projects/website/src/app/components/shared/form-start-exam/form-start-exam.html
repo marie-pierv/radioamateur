@@ -1,28 +1,32 @@
 <div class="main-wrapper">
-  <div class="controls-container">
-    <app-title variant="h3">Générateur d'examen</app-title>
+  @if (!isExamStarted()) {
+    <div class="controls-container">
+      <app-title variant="h3">Générateur d'examen</app-title>
 
-    <app-title>Nombre de questions :</app-title>
-    <!--class à modifier-->
-    <select (change)="onQuantityChange($event)">
-      <option value="10">10 questions</option>
-      <option value="20">20 questions</option>
-      <option value="50">50 questions</option>
-      <option value="100">100 questions</option>
-    </select>
+      <app-title>Nombre de questions :</app-title>
+      <!--class à modifier-->
+      <select (change)="onQuantityChange($event)">
+        <option value="10">10 questions</option>
+        <option value="20">20 questions</option>
+        <option value="50">50 questions</option>
+        <option value="100">100 questions</option>
+      </select>
 
-    <app-title class="test">Choisir une section :</app-title>
-    <select (change)="onCategoryChange($event)">
-      <option value="">-- Sélectionnez une section --</option>
-      @for (cat of categories; track cat.code) {
-        <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
-      }
-    </select>
+      <app-title class="test">Choisir une section :</app-title>
+      <select (change)="onCategoryChange($event)">
+        <option value="">-- Sélectionnez une section --</option>
+        @for (cat of categories; track cat.code) {
+          <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
+        }
+      </select>
 
-    <div>
-      <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
-        <span>Débuter</span>
-      </app-button>
+      <div>
+        <app-button variant="tile" (click)="startExam()" [disabled]="!selectedCategory()">
+          <span>Débuter</span>
+        </app-button>
+      </div>
     </div>
-  </div>
+  } @else {
+    <app-exam-display></app-exam-display>
+  }
 </div>

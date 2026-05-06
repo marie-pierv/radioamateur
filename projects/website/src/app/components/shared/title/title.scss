@@ -1,10 +1,6 @@
 @use 'sass:color';
 @use '../../../../styles.scss' as *;
 
-:host {
-  display: block;
-}
-
 .title-h1 {
   font-family: $font-main;
   font-size: 41px;
@@ -26,6 +22,23 @@
   font-size: 30px;
   font-weight: 400;
   line-height: 1.2em;
+}
+
+.title-h4 {
+  font-family: 'Vt323', monospace;
+  font-style: normal;
+  font-size: 87px;
+  color: $color-accent;
+  font-display: block;
+  line-height: 0.6em;
+}
+
+.title-h5 {
+  font-family: 'Vt323', monospace;
+  font-style: normal;
+  font-size: 25px;
+  color: $color-accent;
+  line-height: 0.9em;
 }
 
 .title-p {
