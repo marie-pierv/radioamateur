@@ -1,37 +1,48 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, inject, computed, input } from '@angular/core';
+import { PracticeExam } from '../../../services/practice-exam';
 import { CommonModule } from '@angular/common';
+import { Button } from '../button/button';
+import { Title } from '../title/title';
 
 @Component({
   selector: 'app-exam-progress',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="progress-wrapper">
-      <div class="progress-info">
-        <span class="count">Question {{ current() + 1 }} sur {{ total() }}</span>
-      </div>
-
-      <div class="progress-track">
-        <div class="progress-bar" [style.width.%]="percentage()"></div>
-      </div>
-
-      <div class="percentage-label">{{ percentage() | number: '1.0-0' }}% complété</div>
-    </div>
-  `,
+  imports: [CommonModule, Button, Title],
+  template: `<p>exam-progress works!</p>`,
+  templateUrl: './exam-progress.html',
   styleUrl: './exam-progress.scss',
 })
 export class ExamProgress {
-  current = input<number>(0);
-  total = input<number>(0);
+  protected practice = inject(PracticeExam);
 
-  // Calcul de pourcentage
-  percentage = computed(() => {
-    const t = this.total();
-    const c = this.current();
+  current = input.required<number>();
+  total = input.required<number>();
 
-    if (t <= 0) return 0;
+  //Signaux basés sur le service PracticeExam
+  questionsAnswered = this.practice.countAnswered;
+  totalQuestions = this.practice.totalQuestions;
+  correctAnswersCount = this.practice.correctAnswersCount;
+  progressPercentage = this.practice.progressPercent;
+  successRate = computed(() => Math.round(this.practice.successRate()));
 
-    const progress = (c / t) * 100;
-    return Math.min(progress, 100);
+  // Calcul de fin : égalité des 2
+  isFinished = computed(() => {
+    const current = this.questionsAnswered();
+    const total = this.totalQuestions();
+    return current > 0 && current === total;
+  });
+
+  finalScore = computed(() => Math.round(this.practice.successRate()));
+
+  feedbackMessage = computed(() => {
+    const score = this.finalScore();
+
+    if (score >= 80) {
+      return 'Expert Radio : Fréquence maîtrisée.';
+    } else if (score >= 60) {
+      return "Contact établi : Très peu d'interférences.";
+    } else {
+      return 'Signal faible : Continuez de pratiquer pour améliorer la réception.';
+    }
   });
 }

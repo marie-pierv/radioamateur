@@ -1,13 +1,9 @@
 <div class="exam-container">
   <app-card class="exam-container__card">
     @if (!isStarted()) {
-      <app-form-start-exam (onStart)="startExam($event)"></app-form-start-exam>
+      <app-form-start-exam (onStart)="onExamStarted()"></app-form-start-exam>
     } @else if (!isFinished()) {
-      <app-exam-display
-        [questionData]="sessionQuestions()[currentIndex()]"
-        (nextRequested)="goToNext()"
-      >
-      </app-exam-display>
+      <app-exam-display> </app-exam-display>
     } @else {
       <div class="result-card">
         <h2>Examen terminé !</h2>
@@ -19,7 +15,7 @@
   <app-card class="exam-container__card">
     @if (practiceExam.totalQuestions() > 0) {
       <app-exam-progress
-        [current]="practiceExam.currentIdx()"
+        [current]="practiceExam.countAnswered()"
         [total]="practiceExam.totalQuestions()"
       >
       </app-exam-progress>

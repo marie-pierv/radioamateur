@@ -1,16 +1,21 @@
-import { Component, OnInit, output, signal } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../button/button';
+import { ExamDisplay } from '../exam-display/exam-display';
 import { Title } from '../title/title';
 
 @Component({
   selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Button, Title],
+  imports: [Button, ExamDisplay, Title],
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
-export class FormStartExam implements OnInit {
+export class FormStartExam {
+  private practiceExam = inject(PracticeExam);
+
+  onStart = output<void>();
+
   // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
@@ -24,28 +29,19 @@ export class FormStartExam implements OnInit {
     // Ajoute les autres ici...
   ];
 
-  onStart = output<{ category: string; quantity: number }>();
   selectedCategory = signal<string>('');
   quantity = signal<number>(10);
-  examEnd = signal<boolean>(false);
   isExamStarted = signal<boolean>(false);
 
-  constructor(public practiceExam: PracticeExam) {}
-
-  ngOnInit() {}
-
   startExam() {
-    const cat = this.selectedCategory();
-    const qty = this.quantity();
+    if (this.selectedCategory()) {
+      this.practiceExam.startNewExam(this.quantity(), [this.selectedCategory()]);
 
-    if (!cat) return;
+      this.isExamStarted.set(true);
 
-    // this.practiceExam.startNewExam(qty, [cat]);
-
-    this.onStart.emit({
-      category: cat,
-      quantity: qty,
-    });
+      // Prévient le parent
+      this.onStart.emit();
+    }
   }
 
   onCategoryChange(event: Event) {
@@ -53,7 +49,11 @@ export class FormStartExam implements OnInit {
     this.selectedCategory.set(selectElement.value);
   }
   onQuantityChange(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    this.quantity.set(parseInt(selectElement.value, 10));
+    const value = (event.target as HTMLSelectElement).value;
+    this.quantity.set(Number(value));
+  }
+  reset() {
+    this.isExamStarted.set(false);
+    this.selectedCategory.set('');
   }
 }

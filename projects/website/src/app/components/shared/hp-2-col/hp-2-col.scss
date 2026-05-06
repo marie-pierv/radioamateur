@@ -1,0 +1,27 @@
+.bloc-2-col {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  width: 60%;
+  margin: 40px auto;
+
+  &__left {
+    width: 50%;
+
+    &__text {
+      text-align: left;
+      padding-bottom: 15px;
+    }
+  }
+
+  &__right {
+    width: 50%;
+
+    &__image {
+      width: 394px;
+      height: 421px;
+      object-fit: cover;
+    }
+  }
+}

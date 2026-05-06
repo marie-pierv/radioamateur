@@ -1,1 +1,25 @@
-<p>exam-progress works!</p>
+<div class="progress-container">
+  @if (!isFinished()) {
+    <app-title variant="p-large"
+      ><strong>Question {{ questionsAnswered() }} sur {{ totalQuestions() }}</strong>
+    </app-title>
+    <div>
+      <app-title variant="p-large"><strong>Score actuel :</strong></app-title>
+      <app-title variant="h4">{{ successRate() }}%</app-title>
+      <app-title variant="h5" class="progress-container__score"
+        >{{ correctAnswersCount() }} sur {{ totalQuestions() }}</app-title
+      >
+    </div>
+  } @else {
+    <div class="progress-container__final">
+      <app-title variant="p-large"><strong>Score</strong></app-title>
+      <app-title variant="h4">{{ finalScore() }}%</app-title>
+      <app-title variant="h5" class="progress-container__final__message">
+        {{ feedbackMessage() }}
+      </app-title>
+
+      <img src="giphy.gif" alt="Bravo !" class="progress-container__final__img" />
+      <app-button variant="primary">Partager mon score</app-button>
+    </div>
+  }
+</div>
