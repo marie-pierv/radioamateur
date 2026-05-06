@@ -1,6 +1,6 @@
 <div class="exam">
   <app-title variant="h3">
-    {{ questionData().question_french }}
+    {{ currentQuestionLabel() }}
   </app-title>
 
   <div class="exam__answers-grid">
@@ -9,7 +9,7 @@
         class="exam__answers-grid__button"
         variant="answer"
         [isSelected]="selectedAnswer() === opt"
-        (btnClick)="onSelect(opt)"
+        (click)="onSelect(opt)"
       >
         <span class="exam__answers-grid__label">{{ getLetter($index) }}.</span>
         <app-title variant="p" class="exam__answers-grid__text">{{ opt }}</app-title>
@@ -26,10 +26,8 @@
       <app-button variant="tile" (click)="verifierReponse()" [disabled]="!selectedAnswer()">
         <span>Valider la réponse</span>
       </app-button>
-    }
-
-    @if (hasValidated()) {
-      <app-button (click)="onNext()" variant="tile" class="btn-next">
+    } @else {
+      <app-button (click)="loadNextQuestion()" variant="tile" class="btn-next">
         <span>Continuer</span>
       </app-button>
     }

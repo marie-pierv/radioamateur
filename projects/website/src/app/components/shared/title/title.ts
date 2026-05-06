@@ -2,7 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // On définit les types de variants possibles
-export type TitleVariant = 'h1' | 'h2' | 'h3' | 'p' | 'p-large';
+export type TitleVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'p' | 'p-large';
 
 @Component({
   selector: 'app-title',
