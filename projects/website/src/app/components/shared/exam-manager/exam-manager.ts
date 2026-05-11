@@ -14,19 +14,19 @@ import { ExamDisplay } from '../exam-display/exam-display';
   styleUrl: './exam-manager.scss',
 })
 export class ExamManager {
-  public practiceExam = inject(PracticeExam);
-
-  // --- États de la session ---
-  isStarted = signal<boolean>(false);
-  isFinished = signal<boolean>(false);
-
-  onExamStarted() {
-    this.isStarted.set(true);
-    this.isFinished.set(false);
-  }
-
-  reset() {
-    this.isStarted.set(false);
-    this.isFinished.set(false);
-  }
+  // public practiceExam = inject(PracticeExam);
+  // // --- États de la session ---
+  // isStarted = signal<boolean>(this.practiceExam.totalQuestions() > 0);
+  // isFinished = signal<boolean>(
+  //   this.practiceExam.totalQuestions() > 0 &&
+  //     this.practiceExam.countAnswered() === this.practiceExam.totalQuestions(),
+  // );
+  // onExamStarted() {
+  //   this.isStarted.set(true);
+  //   this.isFinished.set(false);
+  // }
+  // reset() {
+  //   this.isStarted.set(false);
+  //   this.isFinished.set(false);
+  // }
 }
