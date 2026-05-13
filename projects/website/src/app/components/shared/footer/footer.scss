@@ -1,0 +1,45 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
+:host {
+  display: block;
+}
+
+.container-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border-top: 1px solid $color-primary;
+  padding: 10px 20px;
+  background-color: white;
+  align-items: center;
+
+  &__info {
+    display: flex;
+    width: 30%;
+
+    &__letter {
+      font-size: 24px;
+      font-weight: bold;
+      color: $color-primary;
+    }
+  }
+  &__copy {
+    width: 30%;
+    font-size: 12px;
+    line-height: 1;
+    color: $color-primary;
+    text-align: center;
+  }
+
+  &__links {
+    display: flex;
+    width: 30%;
+    font-size: 12px;
+    line-height: 1;
+    text-align: center;
+    justify-content: flex-end;
+    gap: 20px;
+    color: $color-primary;
+  }
+}
