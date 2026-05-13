@@ -1,0 +1,17 @@
+<app-title variant="h3">Analyse de votre score</app-title>
+<div class="score-breakdown">
+  @for (stat of globalStatsByCategory(); track stat.code) {
+    <app-button variant="answer" class="score-breakdown__category">
+      <div class="score-breakdown__category__content">
+        <div>
+          <app-title variant="p">{{ stat.name }}</app-title>
+        </div>
+        <div>
+          <app-title variant="p">{{ stat.percent | number: '1.0-0' }} %</app-title>
+        </div>
+      </div>
+    </app-button>
+  } @empty {
+    <p>Aucune donnée disponible pour le moment.</p>
+  }
+</div>

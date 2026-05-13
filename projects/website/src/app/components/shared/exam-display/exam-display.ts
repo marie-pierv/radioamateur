@@ -3,7 +3,6 @@ import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../../shared/button/button';
 import { Title } from '../title/title';
-import { Questions } from '../../../interfaces/questions';
 
 @Component({
   selector: 'app-exam-display',
@@ -29,13 +28,11 @@ export class ExamDisplay implements OnInit {
   }
 
   loadNextQuestion() {
-    // 2. On va chercher la catégorie dans le service plutôt que dans un input
     const categories = this.practiceExam.selectedCategories();
     const cat = categories.length > 0 ? categories[0] : '';
 
     // Vérification de fin via le service
     if (this.practiceExam.countAnswered() >= this.practiceExam.totalQuestions()) {
-      // Tu peux gérer la fin ici ou via un signal dans le service
       return;
     }
 

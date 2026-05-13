@@ -1,13 +1,12 @@
 import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../button/button';
-import { ExamDisplay } from '../exam-display/exam-display';
 import { Title } from '../title/title';
 
 @Component({
   selector: 'app-form-start-exam',
   standalone: true,
-  imports: [Button, ExamDisplay, Title],
+  imports: [Button, Title],
   templateUrl: './form-start-exam.html',
   styleUrl: './form-start-exam.scss',
 })
@@ -29,15 +28,16 @@ export class FormStartExam {
     // Ajoute les autres ici...
   ];
 
+  // isExamStarted = signal<boolean>(this.practiceExam.totalQuestions() > 0);
   selectedCategory = signal<string>('');
   quantity = signal<number>(10);
-  isExamStarted = signal<boolean>(false);
+  // isExamStarted = signal<boolean>(false);
 
   startExam() {
     if (this.selectedCategory()) {
       this.practiceExam.startNewExam(this.quantity(), [this.selectedCategory()]);
 
-      this.isExamStarted.set(true);
+      // this.isExamStarted.set(true);
 
       // Prévient le parent
       this.onStart.emit();
@@ -53,7 +53,7 @@ export class FormStartExam {
     this.quantity.set(Number(value));
   }
   reset() {
-    this.isExamStarted.set(false);
+    // this.isExamStarted.set(false);
     this.selectedCategory.set('');
   }
 }
