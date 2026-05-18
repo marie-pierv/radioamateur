@@ -1,3 +1,5 @@
+@use '../../../../styles.scss' as *;
+
 :host {
   display: block;
 }
@@ -6,6 +8,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  gap: 40px;
   margin: 0px auto;
 
   &__content {
@@ -13,5 +16,14 @@
     flex-direction: column;
     width: 100%;
     gap: 10px;
+
+    &__select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 0px;
+      font-family: $font-main;
+      font-size: 14px;
+      line-height: 1.2em;
+    }
   }
 }

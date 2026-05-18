@@ -1,30 +1,35 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PracticeExam } from '../../../services/practice-exam';
-import { Button } from '../button/button';
 import { Title } from '../title/title';
 import { CategoryDefinition } from '../../../interfaces/interface-category';
 import { CategoryStat } from '../../../interfaces/interface-category-stats';
 
 @Component({
   selector: 'app-score-breakdown',
-  imports: [Button, Title, CommonModule],
+  imports: [Title, CommonModule],
   templateUrl: './score-breakdown.html',
   styleUrl: './score-breakdown.scss',
 })
-export class ScoreBreakdown {
+export class ScoreBreakdown implements OnInit {
   private practiceExam = inject(PracticeExam);
 
   readonly categories: CategoryDefinition[] = [
-    { code: 'B-001', name: 'Règlements' },
-    { code: 'B-002', name: 'Procédures' },
+    { code: 'B-001', name: 'Règlements et politiques' },
+    { code: 'B-002', name: 'Procédures d’exploitation' },
     { code: 'B-003', name: 'Modes de transmission' },
-    { code: 'B-004', name: 'Circuits' },
-    { code: 'B-005', name: 'Signaux' },
-    { code: 'B-006', name: 'Antennes' },
+    { code: 'B-004', name: 'Circuits et composants' },
+    { code: 'B-005', name: 'Signaux et mesures' },
+    { code: 'B-006', name: 'Antennes et lignes' },
     { code: 'B-007', name: 'Propagation' },
-    { code: 'B-008', name: 'Sécurité' },
+    { code: 'B-008', name: 'Brouillage et sécurité' },
   ];
+
+  private isInitialized = signal(false);
+
+  ngOnInit(): void {
+    this.isInitialized.set(true);
+  }
 
   // Stats de l'examen en cours
   statsByCategory = computed<CategoryStat[]>(() => {
@@ -48,17 +53,26 @@ export class ScoreBreakdown {
     });
   });
 
-  // Stats historiques (LocalStorage global)
   globalStatsByCategory = computed<CategoryStat[]>(() => {
-    // On utilise le signal du service ici
-    const history = this.practiceExam.globalHistory();
-    const historyEntries = Object.entries(history);
+    if (!this.isInitialized()) return [];
+    const history = this.practiceExam.globalHistory() as any;
+
+    if (!history || !history.examens || history.examens.length === 0) {
+      return [];
+    }
+
+    const allPastAnswers = history.examens.flatMap((examen: any) => examen.answers || []);
 
     return this.categories.map((cat) => {
-      const questionsInCategory = historyEntries.filter(([id]) => id.startsWith(cat.code));
+      const questionsInCategory = allPastAnswers.filter((ans: any) => {
+        const questionId = ans.question || '';
+        return questionId.startsWith(cat.code);
+      });
 
       const total = questionsInCategory.length;
-      const correct = questionsInCategory.filter(([_, isCorrect]) => isCorrect === true).length;
+      const correct = questionsInCategory.filter(
+        (ans: any) => ans.answer === ans.correctAnswer,
+      ).length;
 
       return {
         code: cat.code,

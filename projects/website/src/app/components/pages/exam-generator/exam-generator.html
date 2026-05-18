@@ -1,31 +1,27 @@
-<router-outlet />
 <div class="exam-container">
-  <div class="exam-container__content">
-    @if (practiceExam.totalQuestions() === 0) {
-      <app-card class="exam-container__card">
-        <!-- ÉTAT 1 : Formulaire de départ -->
-        <app-form-start-exam class="exam-container__card__form" (onStart)="isExamStarted.set(true)">
-        </app-form-start-exam>
-      </app-card>
-    } @else {
-      <div>
-        <div class="exam-container">
-          <!-- ÉTAT 3 : Examen en cours -->
-          <app-card class="exam-container__card-gauche">
-            <app-exam-display></app-exam-display>
-          </app-card>
+  @if (practiceExam.totalQuestions() === 0) {
+    <app-card class="exam-container__card">
+      <!-- ÉTAT 1 : Formulaire de départ -->
+      <app-form-start-exam class="exam-container__card__form" (onStart)="isExamStarted.set(true)">
+      </app-form-start-exam>
+    </app-card>
+  } @else {
+    <div>
+      <div class="exam-container__content">
+        <!-- ÉTAT 3 : Examen en cours -->
+        <app-card class="exam-container__content__card-gauche">
+          <app-exam-display></app-exam-display>
+        </app-card>
 
-          <app-card class="exam-container__card-droit">
-            <app-exam-progress
-              class="exam-container__card__progress"
-              [current]="practiceExam.countAnswered()"
-              [total]="practiceExam.totalQuestions()"
-            >
-            </app-exam-progress>
-          </app-card>
-        </div>
-        <div></div>
+        <app-card class="exam-container__content__card-droit">
+          <app-exam-progress
+            class="exam-container__content__card__progress"
+            [current]="practiceExam.countAnswered()"
+            [total]="practiceExam.totalQuestions()"
+          >
+          </app-exam-progress>
+        </app-card>
       </div>
-    }
-  </div>
+    </div>
+  }
 </div>
