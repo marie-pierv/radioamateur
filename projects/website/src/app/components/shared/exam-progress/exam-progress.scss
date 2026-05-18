@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use '../../../../styles.scss' as *;
+
 :host {
   display: block;
 }
@@ -13,7 +16,7 @@
 
   &__score {
     width: 100%;
-    text-align: center; // Pour centrer le texte "X sur Y" dans la barre
+    text-align: center;
   }
 
   &__final {
@@ -24,6 +27,17 @@
       margin: auto;
       width: 150px;
       padding-bottom: 15px;
+    }
+  }
+  &__quit-exam-button {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 700;
+
+    &:hover {
+      background-color: color.adjust($color-text, $lightness: 80%);
+      border-color: $color-text;
+      color: $color-text;
     }
   }
 }

@@ -4,6 +4,7 @@ import { Default } from './components/layouts/default/default';
 import { ExamGenerator } from './components/pages/exam-generator/exam-generator';
 import { Dashboard } from './components/layouts/dashboard/dashboard';
 import { Outils } from './components/layouts/outils/outils';
+import { ExamFinish } from './components/pages/exam-finish/exam-finish';
 
 export const routes: Routes = [
   {
@@ -18,6 +19,10 @@ export const routes: Routes = [
       {
         path: 'examens',
         component: ExamGenerator,
+      },
+      {
+        path: 'exam-finish',
+        component: ExamFinish,
       },
       {
         path: 'outils',

@@ -15,7 +15,6 @@ export class FormStartExam {
 
   onStart = output<void>();
 
-  // Cette partie à revoir
   categories = [
     { code: 'B-001', name: 'Règlements et politiques' },
     { code: 'B-002', name: 'Procédures d’exploitation' },
@@ -28,18 +27,13 @@ export class FormStartExam {
     // Ajoute les autres ici...
   ];
 
-  // isExamStarted = signal<boolean>(this.practiceExam.totalQuestions() > 0);
   selectedCategory = signal<string>('');
   quantity = signal<number>(10);
-  // isExamStarted = signal<boolean>(false);
 
   startExam() {
     if (this.selectedCategory()) {
       this.practiceExam.startNewExam(this.quantity(), [this.selectedCategory()]);
 
-      // this.isExamStarted.set(true);
-
-      // Prévient le parent
       this.onStart.emit();
     }
   }
@@ -53,7 +47,6 @@ export class FormStartExam {
     this.quantity.set(Number(value));
   }
   reset() {
-    // this.isExamStarted.set(false);
     this.selectedCategory.set('');
   }
 }

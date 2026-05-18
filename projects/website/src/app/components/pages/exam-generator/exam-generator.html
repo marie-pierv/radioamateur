@@ -1,8 +1,8 @@
 <router-outlet />
-<div class="test">
-  <div class="exam-container">
+<div class="exam-container">
+  <div class="exam-container__content">
     @if (practiceExam.totalQuestions() === 0) {
-      <app-card class="exam-container__card gauche">
+      <app-card class="exam-container__card">
         <!-- ÉTAT 1 : Formulaire de départ -->
         <app-form-start-exam class="exam-container__card__form" (onStart)="isExamStarted.set(true)">
         </app-form-start-exam>
@@ -11,11 +11,11 @@
       <div>
         <div class="exam-container">
           <!-- ÉTAT 3 : Examen en cours -->
-          <app-card class="exam-container__card gauche">
+          <app-card class="exam-container__card-gauche">
             <app-exam-display></app-exam-display>
           </app-card>
 
-          <app-card class="exam-container__card droit">
+          <app-card class="exam-container__card-droit">
             <app-exam-progress
               class="exam-container__card__progress"
               [current]="practiceExam.countAnswered()"
@@ -24,18 +24,8 @@
             </app-exam-progress>
           </app-card>
         </div>
-        <div>
-          <app-button variant="answer" (click)="resetAndNew()">
-            Recommencer un nouvel examen
-          </app-button>
-        </div>
+        <div></div>
       </div>
     }
-  </div>
-
-  <div class="analyse exam-container">
-    <app-card>
-      <app-score-breakdown></app-score-breakdown>
-    </app-card>
   </div>
 </div>
