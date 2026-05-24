@@ -20,17 +20,19 @@
   }
 
   &__final {
+    display: flex;
+    flex-direction: column;
     &__message {
-      padding: 0 5px;
+      margin-top: 10px;
+      color: $color-accent;
     }
-    &__img {
+    &__anim {
       margin: auto;
       width: 150px;
-      padding-bottom: 15px;
+      padding: 20px 0;
     }
   }
   &__quit-exam-button {
-    margin-top: 20px;
     font-size: 13px;
     font-weight: 700;
 
