@@ -1,19 +1,18 @@
-<div class="main-wrapper">
-  <!-- @if (!isExamStarted()) { -->
-  <div class="controls-container">
+<div class="form-container">
+  <div class="form-container__content">
     <app-title variant="h3">Générateur d'examen</app-title>
 
-    <app-title>Nombre de questions :</app-title>
+    <app-title variant="p">Nombre de questions :</app-title>
     <!--class à modifier-->
-    <select (change)="onQuantityChange($event)">
+    <select class="form-container__content__select" (change)="onQuantityChange($event)">
       <option value="10">10 questions</option>
       <option value="20">20 questions</option>
       <option value="50">50 questions</option>
       <option value="100">100 questions</option>
     </select>
 
-    <app-title class="test">Choisir une section :</app-title>
-    <select (change)="onCategoryChange($event)">
+    <app-title variant="p">Choisir une section :</app-title>
+    <select class="form-container__content__select" (change)="onCategoryChange($event)">
       <option value="">-- Sélectionnez une section --</option>
       @for (cat of categories; track cat.code) {
         <option [value]="cat.code">{{ cat.code }} - {{ cat.name }}</option>
@@ -26,7 +25,4 @@
       </app-button>
     </div>
   </div>
-  <!-- } @else { -->
-  <!-- <app-exam-display></app-exam-display> -->
-  <!-- } -->
 </div>

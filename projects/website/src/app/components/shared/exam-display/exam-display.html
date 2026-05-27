@@ -11,7 +11,9 @@
         [isSelected]="selectedAnswer() === opt"
         (click)="onSelect(opt)"
       >
-        <span class="exam__answers-grid__label">{{ getLetter($index) }}.</span>
+        <app-title variant="p" class="exam__answers-grid__label"
+          >{{ getLetter($index) }}.&nbsp;
+        </app-title>
         <app-title variant="p" class="exam__answers-grid__text">{{ opt }}</app-title>
       </app-button>
     }

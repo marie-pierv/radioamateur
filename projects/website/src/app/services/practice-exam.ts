@@ -1,12 +1,13 @@
 import { computed, Injectable, signal } from '@angular/core';
 
 interface QuestionExamState {
-  [question_id: string]: AnswerDetail; // questionId -> réponse sélectionnée
+  [question_id: string]: AnswerDetail;
 }
 
 interface AnswerDetail {
   answer: string;
   isCorrect: boolean;
+  index: number;
 }
 
 export interface ExamState {
@@ -16,18 +17,39 @@ export interface ExamState {
   categories: string[];
 }
 
+export interface HistoricalAnswer {
+  question: string;
+  answer: string;
+  correctAnswer: string;
+}
+
+export interface HistoricalExam {
+  date: string;
+  numberOfQuestions: number;
+  numberOfQuestionSucceeded: number;
+  durationSeconds: number;
+  answers: HistoricalAnswer[];
+}
+
+export interface GlobalStatsState {
+  examens: HistoricalExam[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PracticeExam {
   private readonly localStorageKey = 'currentExam';
   private readonly statsStorageKey = 'globalStats';
+  private examStartTime: number = Date.now();
 
   currentIdx = signal<number>(0);
   selectedCategories = signal<string[]>([]);
   totalQuestions = signal<number>(0);
   answers = signal<Map<string, AnswerDetail>>(new Map());
   score = signal<number>(0);
+
+  globalHistory = signal<GlobalStatsState>(this.loadGlobalHistory());
 
   // Nombre de questions répondues
   countAnswered = computed(() => this.answers().size);
@@ -46,52 +68,51 @@ export class PracticeExam {
   constructor() {
     this.loadFromStorage();
   }
+
   private loadFromStorage() {
     const saved = localStorage.getItem(this.localStorageKey);
-    console.log('📦 Données brutes du Storage :', saved);
     if (saved) {
       try {
-        const state: ExamState = JSON.parse(saved);
-        // On remplit les signals avec ce qu'on a trouvé
+        const state = JSON.parse(saved);
         this.score.set(state.score || 0);
         this.totalQuestions.set(state.total || 0);
         this.selectedCategories.set(state.categories || []);
+        this.currentIdx.set(state.currentIdx || 0);
 
         // Conversion de l'objet {} en Map() pour le signal
         const savedMap = new Map<string, AnswerDetail>(Object.entries(state.questions));
         this.answers.set(savedMap);
-        console.log('✅ État restauré avec succès :', state);
+        this.examStartTime = state.startTime || Date.now();
       } catch (error: any) {
-        // Ajoute ": any" ou ": unknown" ici
-        console.error('❌ Erreur de lecture du localStorage :', error);
+        console.error('Erreur de lecture du localStorage :', error);
       }
     }
   }
 
   startNewExam(quantity: number, categories: string[]) {
-    console.log('🚀 BOOM ! Quantité reçue :', quantity);
     localStorage.removeItem(this.localStorageKey);
-    // Mémorise les catégories dans le signa
+    this.examStartTime = Date.now();
+
     this.selectedCategories.set(categories);
     this.currentIdx.set(0);
-    this.selectedCategories.set(categories);
     this.totalQuestions.set(quantity);
     this.answers.set(new Map());
     this.score.set(0);
 
-    const initialState: ExamState = {
+    const initialState = {
       questions: {},
       score: 0,
       total: quantity,
       categories: categories,
+      currentIdx: 0,
+      startTime: this.examStartTime,
     };
     localStorage.setItem(this.localStorageKey, JSON.stringify(initialState));
-    //this.saveExamState(initialState);
   }
 
-  // Logique pour sauvegarder la réponse de l'utilisateur
-  saveExamState(state: ExamState): void {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(state));
+  goToNextQuestion() {
+    this.currentIdx.update((idx) => idx + 1);
+    this.saveCurrentExam();
   }
 
   //Met à jour une seule réponse sans effacer le reste
@@ -101,6 +122,8 @@ export class PracticeExam {
       score: this.score(),
       total: this.totalQuestions(),
       categories: this.selectedCategories(),
+      currentIdx: this.currentIdx(),
+      startTime: this.examStartTime,
     };
     localStorage.setItem(this.localStorageKey, JSON.stringify(state));
   }
@@ -108,7 +131,12 @@ export class PracticeExam {
   updateAnswer(question_id: string, answer: string, isCorrect: boolean): void {
     this.answers.update((prev) => {
       const newMap = new Map(prev);
-      newMap.set(question_id, { answer, isCorrect });
+
+      newMap.set(question_id, {
+        answer,
+        isCorrect,
+        index: this.currentIdx(),
+      });
       return newMap;
     });
 
@@ -116,47 +144,66 @@ export class PracticeExam {
       this.score.update((v) => v + 1);
     }
     this.saveCurrentExam();
-
-    this.updateGlobalHistory(question_id, isCorrect);
   }
 
-  globalHistory = signal<Record<string, boolean>>(this.loadGlobalHistory());
-
-  private loadGlobalHistory(): Record<string, boolean> {
+  // --- LOGIQUE DE L'HISTORIQUE GLOBAL ---
+  private loadGlobalHistory(): GlobalStatsState {
     const saved = localStorage.getItem(this.statsStorageKey);
-    return saved ? JSON.parse(saved) : {};
+    // Initialise avec un tableau vide d'examens si rien n'existe
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed && parsed.examens ? parsed : { examens: [] };
+      } catch {
+        return { examens: [] };
+      }
+    }
+    return { examens: [] };
   }
 
-  private updateGlobalHistory(questionId: string, isCorrect: boolean) {
-    this.globalHistory.update((history) => {
-      const newHistory = { ...history, [questionId]: isCorrect };
-      localStorage.setItem(this.statsStorageKey, JSON.stringify(newHistory));
-      return newHistory;
+  finalizeAndSaveExam(allQuestionsData: any[]): void {
+    const endTime = Date.now();
+    const durationSeconds = Math.round((endTime - this.examStartTime) / 1000);
+
+    // 1. Convertir les réponses en format d'historique
+    const historicalAnswers: HistoricalAnswer[] = [];
+
+    this.answers().forEach((value, questionId) => {
+      // Retrouver la question originale pour avoir la bonne réponse (correct_answer_french)
+      const originalQuestion = allQuestionsData.find((q) => q.question_id === questionId);
+
+      historicalAnswers.push({
+        question: questionId,
+        answer: value.answer,
+        correctAnswer: originalQuestion ? originalQuestion.correct_answer_french : '',
+      });
     });
-    const state: ExamState = {
-      questions: Object.fromEntries(this.answers()) as QuestionExamState,
-      score: this.score(),
-      total: this.totalQuestions(),
-      categories: this.selectedCategories(),
+
+    // 2. Créer le nouvel objet Examen
+    const newExamRecord: HistoricalExam = {
+      date: new Date().toISOString().split('T')[0], // Donne "YYYY-MM-DD"
+      numberOfQuestions: this.totalQuestions(),
+      numberOfQuestionSucceeded: this.score(),
+      durationSeconds: durationSeconds,
+      answers: historicalAnswers,
     };
-    localStorage.setItem(this.localStorageKey, JSON.stringify(state));
+
+    // 3. Mettre à jour le signal global et le localStorage
+    this.globalHistory.update((currentStats) => {
+      // On s'assure qu'on ne garde pas de vieux résidus étranges
+      const currentExamsList = currentStats && currentStats.examens ? currentStats.examens : [];
+
+      const updatedStats = {
+        examens: [...currentExamsList, newExamRecord],
+      };
+
+      localStorage.setItem(this.statsStorageKey, JSON.stringify(updatedStats));
+      return updatedStats;
+    });
+
+    // Nettoyer l'examen courant puisqu'il est terminé et archivé
+    localStorage.removeItem(this.localStorageKey);
   }
-
-  // const saved = localStorage.getItem(this.statsStorageKey);
-  // const history = saved ? JSON.parse(saved) : {};
-
-  // history[questionId] = isCorrect;
-
-  // localStorage.setItem(this.statsStorageKey, JSON.stringify(history));
-
-  // const state: ExamState = {
-  //   questions: Object.fromEntries(this.answers()) as QuestionExamState, // Convertit la Map en objet
-  //   score: this.score(),
-  //   total: this.totalQuestions(),
-  //   categories: this.selectedCategories(),
-  // };
-  // localStorage.setItem(this.localStorageKey, JSON.stringify(state));
-  //}
 
   public isFinished = computed(() => {
     const total = this.totalQuestions();

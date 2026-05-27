@@ -1,7 +1,7 @@
 <div class="progress-container">
   @if (!isFinished()) {
     <app-title variant="p-large"
-      ><strong>Question {{ questionsAnswered() }} sur {{ totalQuestions() }}</strong>
+      ><strong>Question {{ displayIndex() }} sur {{ totalQuestions() }}</strong>
     </app-title>
     <div>
       <app-title variant="p-large"><strong>Score actuel :</strong></app-title>
@@ -18,8 +18,14 @@
         {{ feedbackMessage() }}
       </app-title>
 
-      <img src="giphy.gif" alt="Bravo !" class="progress-container__final__img" />
+      <div class="progress-container__final__anim">
+        <app-animation-sound-bars></app-animation-sound-bars>
+      </div>
+
       <app-button variant="primary">Partager mon score</app-button>
     </div>
   }
+  <app-button variant="answer" class="progress-container__quit-exam-button" (click)="resetAndNew()"
+    >Quitter l'examen</app-button
+  >
 </div>

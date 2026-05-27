@@ -19,24 +19,23 @@
 
 .title-h3 {
   font-family: $font-main;
-  font-size: 30px;
-  font-weight: 400;
+  font-size: 21px;
   line-height: 1.2em;
 }
 
 .title-h4 {
   font-family: 'Vt323', monospace;
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 1.2em;
+  font-size: 87px;
+  color: $color-accent;
+  line-height: 0.7em;
 }
 
 .title-h5 {
   font-family: 'Vt323', monospace;
   font-style: normal;
-  font-size: 25px;
-  color: $color-accent;
-  line-height: 0.9em;
+  font-size: 33px;
+  line-height: 0.8em;
+  letter-spacing: -0.05em;
 }
 
 .title-p {

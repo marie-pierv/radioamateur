@@ -4,7 +4,7 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { Footer } from '../../shared/footer/footer';
 
 @Component({
-  selector: 'app-default',
+  selector: 'app-dashboard',
   imports: [RouterOutlet, Navbar, Footer],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',

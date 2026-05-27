@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, model, input, output, effect } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ServiceQuestions } from '../../../services/service-questions';
 import { PracticeExam } from '../../../services/practice-exam';
 import { Button } from '../../shared/button/button';
@@ -24,15 +24,23 @@ export class ExamDisplay implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadNextQuestion();
-  }
-
-  loadNextQuestion() {
     const categories = this.practiceExam.selectedCategories();
     const cat = categories.length > 0 ? categories[0] : '';
 
-    // Vérification de fin via le service
-    if (this.practiceExam.countAnswered() >= this.practiceExam.totalQuestions()) {
+    // Au tout premier chargement, si l'examen est déjà fini, on ne fait rien
+    if (this.practiceExam.isFinished()) return;
+
+    // On charge la première question (l'index est déjà géré par le service au démarrage)
+    if (cat) {
+      this.loadQuestion(cat);
+    }
+  }
+
+  loadNextQuestion() {
+    this.practiceExam.goToNextQuestion();
+
+    if (this.practiceExam.isFinished()) {
+      console.log('Examen terminé, aucune autre question à charger.');
       return;
     }
 
@@ -40,6 +48,8 @@ export class ExamDisplay implements OnInit {
     this.selectedAnswer.set('');
     this.hasValidated.set(false);
 
+    const categories = this.practiceExam.selectedCategories();
+    const cat = categories.length > 0 ? categories[0] : '';
     if (cat) {
       this.loadQuestion(cat);
     }
@@ -86,6 +96,11 @@ export class ExamDisplay implements OnInit {
         // On met à jour le service
         this.practiceExam.updateAnswer(this.currentId, this.selectedAnswer(), isCorrect);
         this.hasValidated.set(true);
+
+        if (this.practiceExam.isFinished()) {
+          console.log('Dernière question répondue. Sauvegarde dans globalStats...');
+          this.practiceExam.finalizeAndSaveExam(questions);
+        }
       }
     });
   }
