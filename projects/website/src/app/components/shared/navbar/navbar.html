@@ -21,10 +21,11 @@
   </div>
 
   <div class="navbar__button" [class.active]="isMenuOpen">
-    <app-button variant="secondary" type="submit"
+    <app-button variant="secondary" type="submit" (click)="loginModal.open()"
       ><span class="navbar__button-text">Connexion&nbsp;&nbsp;&nbsp;</span
       ><i class="fa-regular fa-user navbar__button-icon"></i
     ></app-button>
+    <app-modal-connection #loginModal></app-modal-connection>
     <app-button type="submit" class="navbar__button-text">Portail éducatif</app-button>
   </div>
 </nav>

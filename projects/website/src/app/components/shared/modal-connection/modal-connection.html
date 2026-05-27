@@ -1,0 +1,24 @@
+<dialog #loginDialog class="login-dialog">
+  <div class="login-dialog__container">
+    <button class="login-dialog__container__close-btn" (click)="close()">✕</button>
+
+    <app-title variant="h2">Connexion</app-title>
+
+    <form
+      class="login-dialog__container__form-group"
+      (submit)="$event.preventDefault(); onSubmit()"
+    >
+      <div class="login-dialog__container__form-group__form">
+        <label for="email">Adresse courriel</label>
+        <input type="email" id="email" placeholder="exemple@courriel.com" required />
+      </div>
+
+      <div class="login-dialog__container__form-group__form">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="login-dialog__container__form-group__btn">Se connecter</button>
+    </form>
+  </div>
+</dialog>
