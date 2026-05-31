@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.calculateurs {
+  width: 60%;
+  max-width: 1000px;
+  display: grid;
+  margin: 40px auto;
+  padding-bottom: 40px;
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 20px;
+
+    &__card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #ffffff;
+      box-shadow: 4px 4px 4px 0px #00000026;
+      padding: 20px 30px 25px 30px;
+      gap: 10px;
+    }
+  }
+}

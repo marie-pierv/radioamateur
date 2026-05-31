@@ -3,9 +3,8 @@ import { Home } from './components/pages/home/home';
 import { Default } from './components/layouts/default/default';
 import { ExamGenerator } from './components/pages/exam-generator/exam-generator';
 import { Dashboard } from './components/layouts/dashboard/dashboard';
-import { Outils } from './components/layouts/outils/outils';
 import { ExamFinish } from './components/pages/exam-finish/exam-finish';
-import { Quicklinks } from './components/shared/quicklinks/quicklinks';
+import { Calculateurs } from './components/pages/calculateurs/calculateurs';
 
 export const routes: Routes = [
   {
@@ -16,6 +15,23 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
+    data: {
+      quicklinks: [
+        {
+          label: 'Réviser par chapitre',
+          link: 'dashboard/outils',
+          type: 'internal',
+        },
+        {
+          label: 'Réviser les questions manquées',
+          link: '/dashboard/revision',
+          type: 'internal',
+        },
+        { label: "Faire une pratique d'examen", link: '/dashboard/examen', type: 'internal' }, // Outils a remplacer par le layout qui va afficher ses components
+        { label: 'Calculateurs', link: '/dashboard/calculateurs', type: 'internal' },
+        { label: 'Obtenir son certificat', link: 'https://rac.ca', type: 'external' },
+      ],
+    },
     children: [
       {
         path: 'examens',
@@ -26,25 +42,8 @@ export const routes: Routes = [
         component: ExamFinish,
       },
       {
-        path: 'outils',
-        component: Outils,
-        data: {
-          quicklinks: [
-            // {
-            //   label: 'Réviser par chapitre',
-            //   link: 'dashboard/outils',
-            //   type: 'internal',
-            // },
-            // {
-            //   label: 'Réviser les questions manquées',
-            //   link: '/dashboard/revision',
-            //   type: 'internal',
-            // },
-            // { label: "Faire une pratique d'examen", link: '/dashboard/examen', type: 'internal' }, // Outils a remplacer par le layout qui va afficher ses components
-            // { label: 'Calculateurs', link: '/dashboard/calculateurs', type: 'internal' },
-            // { label: 'Obtenir son certificat', link: 'https://rac.ca', type: 'external' },
-          ],
-        },
+        path: 'calculateurs',
+        component: Calculateurs,
       },
     ],
   },
